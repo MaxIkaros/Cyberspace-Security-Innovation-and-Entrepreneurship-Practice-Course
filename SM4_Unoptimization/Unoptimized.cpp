@@ -140,16 +140,16 @@ int128 SM4(int128 m) { // 主加密函数，输入与输出均为128位数据
 }
 
 int main() {
-	//for(int i=0;i<32;i++){
-	//	printf("ck[%d]=0x%8x\n",i,CK[i]);
-	//}
-	int128 m = 1;
+	int128 m = 1; // 假设明文为1
+
 	int128 c = SM4(m);
+
 	unsigned int ans[4];
 	for (int i = 0; i < 4; i++) {
 		ans[3 - i] = (unsigned int)(c & 0xffffffff);
 		c >>= 32;
 	}
+
 	for (int i = 0; i < 4; i++) {
 		printf("%x", ans[i]);
 	}
