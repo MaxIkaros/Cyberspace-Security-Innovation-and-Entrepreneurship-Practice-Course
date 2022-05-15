@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SM4_Unoptimization", "SM4_Unoptimization.vcxproj", "{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Debug|x64.ActiveCfg = Debug|x64
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Debug|x64.Build.0 = Debug|x64
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Debug|x86.ActiveCfg = Debug|Win32
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Debug|x86.Build.0 = Debug|Win32
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Release|x64.ActiveCfg = Release|x64
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Release|x64.Build.0 = Release|x64
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Release|x86.ActiveCfg = Release|Win32
+		{C1AA8B80-1C1D-4FD7-BA3F-B755B074AD45}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6BAA425F-12D4-4477-B1B3-3324662590EA}
+	EndGlobalSection
+EndGlobal

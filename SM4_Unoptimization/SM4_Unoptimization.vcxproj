@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{503b92ce-96d7-417e-86c4-7c36e0e64fb2}</ProjectGuid>
-    <RootNamespace>SM4Optimization</RootNamespace>
+    <ProjectGuid>{c1aa8b80-1c1d-4fd7-ba3f-b755b074ad45}</ProjectGuid>
+    <RootNamespace>SM4Unoptimization</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
