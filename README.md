@@ -52,7 +52,7 @@ Project: research report on MPT
 
 Project: Find a key with hash value “\*sdu_cst_20220610\*” under a message composed of \*your name\* followed by \*your student ID\*. For example, “\*San Zhan 202000460001\*”.
 
-Project: Find a 64-byte message under some ![img](README/assets/clip_image002.png) fulfilling that their hash value is symmetrical
+Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical
 
 ## Real-world-ZK：
 
