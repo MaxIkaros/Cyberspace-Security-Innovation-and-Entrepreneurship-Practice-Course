@@ -3,30 +3,30 @@
 #include <cmath>
 using namespace std;
 
-string BinaryHex(string bin) {//ÓÃÀ´½«¶ş½øÖÆ×ª»¯ÎªÊ®Áù½øÖÆ
+string BinaryHex(string bin) {//ç”¨æ¥å°†äºŒè¿›åˆ¶è½¬åŒ–ä¸ºåå…­è¿›åˆ¶
 	string hex = "";
 	int temp = 0;
 	while (bin.size() % 4 != 0)
 	{
-		bin = "0" + bin;//Ã¿ËÄÎ»¶ş½øÖÆÊı¾ÍÄÜ¹»³ÉÎªÒ»¸öÊ®Áù½øÖÆÊı£¬¸ù¾İÕâ¸öÌØµã½«¶ş½øÖÆÊı³¤¶È×ª»»Îª4µÄ±¶Êı£¬ÎÒÃÇÍù¸ßÎ»Ìí0Ö±µ½³¤¶ÈÎª4µÄ±¶Êı¼´¿É
+		bin = "0" + bin;//æ¯å››ä½äºŒè¿›åˆ¶æ•°å°±èƒ½å¤Ÿæˆä¸ºä¸€ä¸ªåå…­è¿›åˆ¶æ•°ï¼Œæ ¹æ®è¿™ä¸ªç‰¹ç‚¹å°†äºŒè¿›åˆ¶æ•°é•¿åº¦è½¬æ¢ä¸º4çš„å€æ•°ï¼Œæˆ‘ä»¬å¾€é«˜ä½æ·»0ç›´åˆ°é•¿åº¦ä¸º4çš„å€æ•°å³å¯
 	}
 	for (int i = 0; i < bin.size(); i += 4) 
 	{
-		temp = (bin[i] - '0') * 8 + (bin[i + 1] - '0') * 4 + (bin[i + 2] - '0') * 2 + (bin[i + 3] - '0') * 1;//ÅĞ¶ÏÃ¿4Î»¶ş½øÖÆÊıµÄÊ®½øÖÆ´óĞ¡
+		temp = (bin[i] - '0') * 8 + (bin[i + 1] - '0') * 4 + (bin[i + 2] - '0') * 2 + (bin[i + 3] - '0') * 1;//åˆ¤æ–­æ¯4ä½äºŒè¿›åˆ¶æ•°çš„åè¿›åˆ¶å¤§å°
 		if (temp < 10) {
-			hex += to_string(temp);//µ±µÃµ½µÄÖµĞ¡ÓÚ10Ê±£¬Ö±½ÓÓÃ0µ½9À´´úÌæ
+			hex += to_string(temp);//å½“å¾—åˆ°çš„å€¼å°äº10æ—¶ï¼Œç›´æ¥ç”¨0åˆ°9æ¥ä»£æ›¿
 		}
 		else {
-			hex += 'A' + (temp - 10);//µ±µÃµ½µÄÖµ´óÓÚ10Ê±£¬½øĞĞAµ½FµÄ×ª»»
+			hex += 'A' + (temp - 10);//å½“å¾—åˆ°çš„å€¼å¤§äº10æ—¶ï¼Œè¿›è¡ŒAåˆ°Fçš„è½¬æ¢
 		}
 	}
 	return hex;
 }
 
-string HexBinary(string hex) {//ÓÃÀ´½«Ê®Áù½øÖÆ×ª»¯Îª¶ş½øÖÆ
+string HexBinary(string hex) {//ç”¨æ¥å°†åå…­è¿›åˆ¶è½¬åŒ–ä¸ºäºŒè¿›åˆ¶
 	string bin = "";
 	string table[16] = { "0000","0001","0010","0011","0100","0101","0110","0111","1000","1001","1010","1011","1100","1101","1110","1111" };
-	//Ê®Áù½øÖÆÃ¿Ò»Î»¿ÉÄÜ¶ÔÓ¦µÄËùÓĞ¶ş½øÖÆÇé¿ö
+	//åå…­è¿›åˆ¶æ¯ä¸€ä½å¯èƒ½å¯¹åº”çš„æ‰€æœ‰äºŒè¿›åˆ¶æƒ…å†µ
 	for (int i = 0; i < hex.size(); i++) 
 	{
 		if (hex[i] >= 'A' && hex[i] <= 'F') {
@@ -39,7 +39,7 @@ string HexBinary(string hex) {//ÓÃÀ´½«Ê®Áù½øÖÆ×ª»¯Îª¶ş½øÖÆ
 	return bin;
 }
 
-int BinaryDec(string bin) {//ÓÃÀ´½«¶ş½øÖÆ×ª»¯ÎªÊ®½øÖÆ
+int BinaryDec(string bin) {//ç”¨æ¥å°†äºŒè¿›åˆ¶è½¬åŒ–ä¸ºåè¿›åˆ¶
 	int dec = 0;
 	for (int i = 0; i < bin.size(); i++) 
 	{
@@ -48,7 +48,7 @@ int BinaryDec(string bin) {//ÓÃÀ´½«¶ş½øÖÆ×ª»¯ÎªÊ®½øÖÆ
 	return dec;
 }
 
-string DecBinary(int dec) {//ÓÃÀ´½«Ê®½øÖÆ×ª»¯Îª¶ş½øÖÆ
+string DecBinary(int dec) {//ç”¨æ¥å°†åè¿›åˆ¶è½¬åŒ–ä¸ºäºŒè¿›åˆ¶
 	string bin = "";
 	while (dec >= 1) 
 	{
@@ -58,7 +58,7 @@ string DecBinary(int dec) {//ÓÃÀ´½«Ê®½øÖÆ×ª»¯Îª¶ş½øÖÆ
 	return bin;
 }
 
-int HexDec(string hex) {//ÓÃÀ´½«Ê®Áù½øÖÆ×ª»¯ÎªÊ®½øÖÆ
+int HexDec(string hex) {//ç”¨æ¥å°†åå…­è¿›åˆ¶è½¬åŒ–ä¸ºåè¿›åˆ¶
 	int dec = 0;
 	for (int i = 0; i < hex.size(); i++) 
 	{
@@ -72,7 +72,7 @@ int HexDec(string hex) {//ÓÃÀ´½«Ê®Áù½øÖÆ×ª»¯ÎªÊ®½øÖÆ
 	return dec;
 }
 
-string DecHex(int dec) {//ÓÃÀ´½«Ê®½øÖÆ×ª»¯ÎªÊ®Áù½øÖÆ
+string DecHex(int dec) {//ç”¨æ¥å°†åè¿›åˆ¶è½¬åŒ–ä¸ºåå…­è¿›åˆ¶
 	string hex = "";
 	int temp = 0;
 	while (dec >= 1) 
@@ -89,13 +89,13 @@ string DecHex(int dec) {//ÓÃÀ´½«Ê®½øÖÆ×ª»¯ÎªÊ®Áù½øÖÆ
 	return hex;
 }
 
-string pad(string str) {//¶ÔÊı¾İ½øĞĞÌî³ä 
+string pad(string str) {//ç”¨æ¥å¯¹æ•°æ®è¿›è¡Œå¡«å…… 
 	string a = "";
-	for (int i = 0; i < str.size(); i++) //Ê×ÏÈ½«ÊäÈëÖµ×ª»»Îª16½øÖÆ×Ö·û´®
+	for (int i = 0; i < str.size(); i++) //é¦–å…ˆå°†è¾“å…¥å€¼è½¬æ¢ä¸º16è¿›åˆ¶å­—ç¬¦ä¸²
 	{
 		a += DecHex((int)str[i]);
 	}
-	cout << "ÊäÈë×Ö·û´®×ª»»ÎªASCIIÂëµÄ½á¹ûÎª£º" << endl;
+	cout << "è¾“å…¥å­—ç¬¦ä¸²è½¬æ¢ä¸ºASCIIç çš„ç»“æœä¸ºï¼š" << endl;
 	for (int i = 0; i < a.size(); i++) 
 	{
 		cout << a[i];
@@ -107,13 +107,13 @@ string pad(string str) {//¶ÔÊı¾İ½øĞĞÌî³ä
 		}
 	}
 	cout << endl;
-	int a_length = a.size() * 4;//¼ÇÂ¼µÄ³¤¶ÈÎª2½øÖÆÏÂµÄ³¤¶È
-	a += "8";//ÔÚ»ñµÃµÄÊı¾İºóÃæÌí1£¬Ïàµ±ÓÚÊÇÔÚÊ®Áù½øÖÆÏÂ¼Ó8
+	int a_length = a.size() * 4;//è®°å½•çš„é•¿åº¦ä¸º2è¿›åˆ¶ä¸‹çš„é•¿åº¦
+	a += "8";//åœ¨è·å¾—çš„æ•°æ®åé¢æ·»1ï¼Œç›¸å½“äºæ˜¯åœ¨åå…­è¿›åˆ¶ä¸‹åŠ 8
 	while (a.size() % 128 != 112) 
 	{
-		a += "0";//½øĞĞ¡°0¡±Êı¾İÌî³ä
+		a += "0";//è¿›è¡Œâ€œ0â€æ•°æ®å¡«å……
 	}
-	string a_len = DecHex(a_length);//ÓÃÓÚ¼ÇÂ¼Êı¾İ³¤¶ÈµÄ×Ö·û´®
+	string a_len = DecHex(a_length);//ç”¨äºè®°å½•æ•°æ®é•¿åº¦çš„å­—ç¬¦ä¸²
 	while (a_len.size() != 16) 
 	{
 		a_len = "0" + a_len;
@@ -122,13 +122,13 @@ string pad(string str) {//¶ÔÊı¾İ½øĞĞÌî³ä
 	return a;
 }
 
-string LeftShift(string str, int n) {//ÊµÏÖÑ­»·×óÒÆnÎ»µÄ¹¦ÄÜ
+string LeftShift(string str, int n) {//å®ç°å¾ªç¯å·¦ç§»nä½çš„åŠŸèƒ½
 	string a = HexBinary(str);
 	a = a.substr(n) + a.substr(0, n);
 	return BinaryHex(a);
 }
 
-string XOR(string a1, string a2) {//ÊµÏÖÒì»ò²Ù×÷
+string XOR(string a1, string a2) {//å®ç°å¼‚æˆ–æ“ä½œ
 	string b1 = HexBinary(a1);
 	string b2 = HexBinary(a2);
 	string b = "";
@@ -144,7 +144,7 @@ string XOR(string a1, string a2) {//ÊµÏÖÒì»ò²Ù×÷
 	return BinaryHex(b);
 }
 
-string AND(string a1, string a2) {//ÊµÏÖÓë²Ù×÷
+string AND(string a1, string a2) {//å®ç°ä¸æ“ä½œ
 	string b1 = HexBinary(a1);
 	string b2 = HexBinary(a2);
 	string b = "";
@@ -159,7 +159,7 @@ string AND(string a1, string a2) {//ÊµÏÖÓë²Ù×÷
 	return BinaryHex(b);
 }
 
-string OR(string a1, string a2) {//ÊµÏÖ»ò²Ù×÷
+string OR(string a1, string a2) {//å®ç°æˆ–æ“ä½œ
 	string b1 = HexBinary(a1);
 	string b2 = HexBinary(a2);
 	string b = "";
@@ -175,7 +175,7 @@ string OR(string a1, string a2) {//ÊµÏÖ»ò²Ù×÷
 	return BinaryHex(b);
 }
 
-string NOT(string a) {//ÊµÏÖ·Ç²Ù×÷
+string NOT(string a) {//å®ç°éæ“ä½œ
 	string b1 = HexBinary(a);
 	string b = "";
 	for (int i = 0; i < b1.size(); i++) 
@@ -190,15 +190,15 @@ string NOT(string a) {//ÊµÏÖ·Ç²Ù×÷
 	return BinaryHex(b);
 }
 
-char bitXor(char a1, char a2) {//ÊµÏÖµ¥±ÈÌØÎ»µÄÒì»ò²Ù×÷
+char bitXor(char a1, char a2) {//å®ç°å•æ¯”ç‰¹ä½çš„å¼‚æˆ–æ“ä½œ
 	return a1 == a2 ? '0' : '1';
 }
 
-char bitAnd(char a1, char a2) {//ÊµÏÖµ¥±ÈÌØµÄÓë²Ù×÷
+char bitAnd(char a1, char a2) {//å®ç°å•æ¯”ç‰¹çš„ä¸æ“ä½œ
 	return (a1 == '1' && a2 == '1') ? '1' : '0';
 }
 
-string modAdd(string a1, string a2) {//ÊµÏÖÄ£¼ÓÔËËã
+string modAdd(string a1, string a2) {//å®ç°æ¨¡åŠ è¿ç®—
 	string b1 = HexBinary(a1);
 	string b2 = HexBinary(a2);
 	char temp = '0';
@@ -221,15 +221,15 @@ string modAdd(string a1, string a2) {//ÊµÏÖÄ£¼ÓÔËËã
 	return BinaryHex(b);
 }
 
-string P1(string a) {//ÊµÏÖÖÃ»»¹¦ÄÜP1£¨X£©
+string P1(string a) {//å®ç°ç½®æ¢åŠŸèƒ½P1ï¼ˆXï¼‰
 	return XOR(XOR(a, LeftShift(a, 15)), LeftShift(a, 23));
 }
 
-string P0(string a) {//ÊµÏÖÖÃ»»¹¦ÄÜP0£¨X£©
+string P0(string a) {//å®ç°ç½®æ¢åŠŸèƒ½P0ï¼ˆXï¼‰
 	return XOR(XOR(a, LeftShift(a, 9)), LeftShift(a, 17));
 }
 
-string T(int i) {//³£Á¿³õÊ¼»¯T
+string T(int i) {//å¸¸é‡åˆå§‹åŒ–T
 	if (0 <= i && i <= 15) {
 		return "79CC4519";
 	}
@@ -238,7 +238,7 @@ string T(int i) {//³£Á¿³õÊ¼»¯T
 	}
 }
 
-string FF(string a1, string a2, string a3, int i) {//ÊµÏÖ²¼¶ûº¯ÊıFF¹¦ÄÜ
+string FF(string a1, string a2, string a3, int i) {//å®ç°å¸ƒå°”å‡½æ•°FFåŠŸèƒ½
 	if (0 <= i && i <= 15) {
 		return XOR(XOR(a1, a2), a3);
 	}
@@ -247,7 +247,7 @@ string FF(string a1, string a2, string a3, int i) {//ÊµÏÖ²¼¶ûº¯ÊıFF¹¦ÄÜ
 	}
 }
 
-string GG(string a1, string a2, string a3, int i) {//ÊµÏÖ²¼¶ûº¯ÊıGG¹¦ÄÜ
+string GG(string a1, string a2, string a3, int i) {//å®ç°å¸ƒå°”å‡½æ•°GGåŠŸèƒ½
 	if (0 <= i && i <= 15) {
 		return XOR(XOR(a1, a2), a3);
 	}
@@ -255,13 +255,13 @@ string GG(string a1, string a2, string a3, int i) {//ÊµÏÖ²¼¶ûº¯ÊıGG¹¦ÄÜ
 		return OR(AND(a1, a2), AND(NOT(a1), a3));
 	}
 }
-string ext(string a) {//ÏûÏ¢À©Õ¹º¯Êı
-	string b = a;//×Ö·û´®ÀàĞÍ´æ´¢Ç°68Î»´æ´¢À©Õ¹×ÖWÖµ
-	for (int i = 16; i < 68; i++) {//¸ù¾İ¹«Ê½Éú³ÉµÚ17Î»µ½µÚ68Î»µÄWÖµ
+string ext(string a) {//æ¶ˆæ¯æ‰©å±•å‡½æ•°
+	string b = a;//å­—ç¬¦ä¸²ç±»å‹å­˜å‚¨å‰68ä½å­˜å‚¨æ‰©å±•å­—Wå€¼
+	for (int i = 16; i < 68; i++) {//æ ¹æ®å…¬å¼ç”Ÿæˆç¬¬17ä½åˆ°ç¬¬68ä½çš„Wå€¼
 		b += XOR(XOR(P1(XOR(XOR(b.substr((i - 16) * 8, 8), b.substr((i - 9) * 8, 8)), LeftShift(b.substr((i - 3) * 8, 8), 15))), LeftShift(b.substr((i - 13) * 8, 8), 7)), b.substr((i - 6) * 8, 8));
 	}
-	cout << "À©Õ¹ºóµÄÏûÏ¢ÈçÏÂ£º" << endl;
-	cout << "ÆäÖĞW0,W1,¡­¡­,W67µÄÏûÏ¢Îª£º" << endl;
+	cout << "æ‰©å±•åçš„æ¶ˆæ¯å¦‚ä¸‹ï¼š" << endl;
+	cout << "å…¶ä¸­W0,W1,â€¦â€¦,W67çš„æ¶ˆæ¯ä¸ºï¼š" << endl;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			cout << b.substr(i * 64 + j * 8, 8) << "  ";
@@ -270,10 +270,10 @@ string ext(string a) {//ÏûÏ¢À©Õ¹º¯Êı
 	}
 	cout << b.substr(512, 8) << "  " << b.substr(520, 8) << "  " << b.substr(528, 8) << "  " << b.substr(536, 8) << endl;
 	cout << endl;
-	for (int i = 0; i < 64; i++) {//¸ù¾İ¹«Ê½Éú³É64Î»W'Öµ
+	for (int i = 0; i < 64; i++) {//æ ¹æ®å…¬å¼ç”Ÿæˆ64ä½W'å€¼
 		b += XOR(b.substr(i * 8, 8), b.substr((i + 4) * 8, 8));
 	}
-	cout << "W0',W1',¡­¡­,W63'µÄÏûÏ¢Îª£º" << endl;
+	cout << "W0',W1',â€¦â€¦,W63'çš„æ¶ˆæ¯ä¸ºï¼š" << endl;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			cout << b.substr(544 + i * 64 + j * 8, 8) << "  ";
@@ -284,11 +284,11 @@ string ext(string a) {//ÏûÏ¢À©Õ¹º¯Êı
 	return b;
 }
 
-string cmp(string str1, string str2) {//ÏûÏ¢Ñ¹Ëõº¯Êı
+string cmp(string str1, string str2) {//æ¶ˆæ¯å‹ç¼©å‡½æ•°
 	string IV = str2;
 	string A = IV.substr(0, 8), B = IV.substr(8, 8), C = IV.substr(16, 8), D = IV.substr(24, 8), E = IV.substr(32, 8), F = IV.substr(40, 8), G = IV.substr(48, 8), H = IV.substr(56, 8);
 	string SS1 = "", SS2 = "", TT1 = "", TT2 = "";
-	cout << "µü´úÑ¹ËõÖĞ¼äÖµÎª: " << endl;
+	cout << "è¿­ä»£å‹ç¼©ä¸­é—´å€¼ä¸º: " << endl;
 	cout << "    A         B         C         D         E         F        G         H " << endl;
 	cout << A << "  " << B << "  " << C << "  " << D << "  " << E << "  " << F << "  " << G << "  " << H << endl;
 	for (int j = 0; j < 64; j++) {
@@ -311,14 +311,14 @@ string cmp(string str1, string str2) {//ÏûÏ¢Ñ¹Ëõº¯Êı
 	return res;
 }
 
-string ite(string a) {//µü´úÑ¹Ëõº¯ÊıÊµÏÖ
+string ite(string a) {//è¿­ä»£å‹ç¼©å‡½æ•°å®ç°
 	int num = a.size() / 128;
-	cout << "ÏûÏ¢¾­¹ıÌî³äÖ®ºó¹²ÓĞ " + to_string(num) + " ¸öÏûÏ¢·Ö×é¡£" << endl;
+	cout << "æ¶ˆæ¯ç»è¿‡å¡«å……ä¹‹åå…±æœ‰ " + to_string(num) + " ä¸ªæ¶ˆæ¯åˆ†ç»„ã€‚" << endl;
 	cout << endl;
 	string V = "7380166F4914B2B9172442D7DA8A0600A96F30BC163138AAE38DEE4DB0FB0E4E";
 	string B = "", extensionB = "", compressB = "";
 	for (int i = 0; i < num; i++) {
-		cout << "µÚ " << to_string(i + 1) << " ¸öÏûÏ¢·Ö×é£º" << endl;
+		cout << "ç¬¬ " << to_string(i + 1) << " ä¸ªæ¶ˆæ¯åˆ†ç»„ï¼š" << endl;
 		cout << endl;
 		B = a.substr(i * 128, 128);
 		extensionB = ext(B);
@@ -328,15 +328,15 @@ string ite(string a) {//µü´úÑ¹Ëõº¯ÊıÊµÏÖ
 	return V;
 }
 
-int main() {//Ö÷º¯Êı
+int main() {//ä¸»å‡½æ•°
 	string str[2];
-	str[0] = "abcdefghikjlmnopqrstuvwxyz";//¿É¸ù¾İĞèÒª½øĞĞĞŞ¸Ä
-	str[1] = "abcdabcdabcdabcdabcdabcd";//¿É¸ù¾İĞèÒª½øĞĞĞŞ¸Ä
+	str[0] = "abcdefghikjlmnopqrstuvwxyz";//å¯æ ¹æ®éœ€è¦è¿›è¡Œä¿®æ”¹
+	str[1] = "abcdabcdabcdabcdabcdabcd";//å¯æ ¹æ®éœ€è¦è¿›è¡Œä¿®æ”¹
 	for (int num = 0; num < 2; num++) {
-		cout << "Ê¾Àı " + to_string(num + 1) + " £¨¿É¸ù¾İĞèÒªÔÚÖ÷º¯ÊıÖĞĞŞ¸Ä£©£ºÊäÈëÏûÏ¢Îª×Ö·û´®: " + str[num] << endl;
+		cout << "ç¤ºä¾‹ " + to_string(num + 1) + " ï¼ˆå¯æ ¹æ®éœ€è¦åœ¨ä¸»å‡½æ•°ä¸­ä¿®æ”¹ï¼‰ï¼šè¾“å…¥æ¶ˆæ¯ä¸ºå­—ç¬¦ä¸²: " + str[num] << endl;
 		cout << endl;
 		string paddingValue = pad(str[num]);
-		cout << "Ìî³äºóµÄÏûÏ¢Îª£º" << endl;
+		cout << "å¡«å……åçš„æ¶ˆæ¯ä¸ºï¼š" << endl;
 		for (int i = 0; i < paddingValue.size() / 64; i++) {
 			for (int j = 0; j < 8; j++) {
 				cout << paddingValue.substr(i * 64 + j * 8, 8) << "  ";
@@ -345,7 +345,7 @@ int main() {//Ö÷º¯Êı
 		}
 		cout << endl;
 		string result = ite(paddingValue);
-		cout << "ÔÓ´ÕÖµÎª£º" << endl;
+		cout << "æ‚å‡‘å€¼ä¸ºï¼š" << endl;
 		for (int i = 0; i < 8; i++) {
 			cout << result.substr(i * 8, 8) << "  ";
 		}
