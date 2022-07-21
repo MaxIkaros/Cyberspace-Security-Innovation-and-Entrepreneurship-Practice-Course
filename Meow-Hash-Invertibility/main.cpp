@@ -29,7 +29,7 @@ static void PrintHash(meow_u128 Hash) {
 int main() {
 	
 	int MsgLen = strlen(MSG); // 23
-	int BlockNum = (MsgLen + 15) / 16; // 2
+	int BlockNum = MsgLen / 32 + 1; // 1
 
 	cout << "MsgLen: " << MsgLen << endl;
 	cout << "BlockNum: " << BlockNum << endl;
