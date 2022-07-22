@@ -12,6 +12,7 @@ using namespace std;
 
 //#define Hashed_msg sdu_cst_20220610
 //#define MSG ge_xiaoyao_202000460091
+
 const char* MSG = "Ge Xiaoyao 202000460091";
 const char* Hashed_msg = "sdu_cst_20220610";
 
