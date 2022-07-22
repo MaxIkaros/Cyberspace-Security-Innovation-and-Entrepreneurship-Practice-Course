@@ -12,6 +12,7 @@ using namespace std;
 
 //#define Hashed_msg sdu_cst_20220610
 //#define MSG ge_xiaoyao_202000460091
+
 const char* MSG = "Ge Xiaoyao 202000460091";
 const char* Hashed_msg = "sdu_cst_20220610";
 
@@ -31,7 +32,6 @@ aesenc(r0, r1); \
 pxor(r0, r1);
 // Xor one more time, so in the last line xor back
 
-
 static void PrintHash(meow_u128 Hash) {
 	printf("    %08X-%08X-%08X-%08X\n",
 		MeowU32From(Hash, 3),
@@ -39,6 +39,7 @@ static void PrintHash(meow_u128 Hash) {
 		MeowU32From(Hash, 1),
 		MeowU32From(Hash, 0));
 }
+
 
 static void InvToGetKey(meow_umm Len, void* SourceInit, void* SourceEnd) {
 
