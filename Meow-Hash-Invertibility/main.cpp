@@ -54,6 +54,16 @@ INSTRUCTION_REORDER_BARRIER; \
 pxor(r1, r2);
 // Xor one more time, so xor back
 
+#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+pxor(r1, r2); \
+pxor(r4, r1); \
+paddq(r5, r6); \
+aesenc(r4, r6); \
+paddq(r1, r5); \
+pxor(r0, r4); \
+aesenc(r0, r1); \
+pxor(r0, r1);
+// Xor one more time, so in the last line xor back
 
 static void PrintHash(meow_u128 Hash) {
 	printf("    %08X-%08X-%08X-%08X\n",
