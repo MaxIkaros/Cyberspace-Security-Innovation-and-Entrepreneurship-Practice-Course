@@ -6,6 +6,6 @@
 
 ## 依赖
 
-本项目使用的平台是visual studio 2022 community
+本项目使用的平台是visual studio 2022
 
 故中文注释编码为GBK或其子集
