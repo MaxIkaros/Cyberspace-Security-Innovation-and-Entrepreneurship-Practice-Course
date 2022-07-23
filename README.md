@@ -52,7 +52,7 @@ Project: research report on MPT
 
 ## Real-world-cryptanalysis：
 
-Project: Find a key with hash value “\*sdu_cst_20220610\*” under a message composed of \*your name\* followed by \*your student ID\*. For example, “\*San Zhan 202000460001\*”.
+✅Project: Find a key with hash value “\*sdu_cst_20220610\*” under a message composed of \*your name\* followed by \*your student ID\*. For example, “\*San Zhan 202000460001\*”.
 
 Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical
 
