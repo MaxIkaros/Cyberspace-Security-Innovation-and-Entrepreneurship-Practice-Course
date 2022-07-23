@@ -14,7 +14,7 @@ using namespace std;
 #define FF1(x,y,z)(x&y) | x&z | (y&z)
 #define GG1(x,y,z)(x&y) | ((~x)&z)
 
-#define FULL_UNROLL(A,B,C,D,E,F,G,H,x)       \
+#define FULL_UNROLL(A,B,C,D,E,F,G,H,x)       \ 
     if(j<16) T_[j]=0x79CC4519;else T_[j]= 0x7AB79D8A;\
     SS1 = rol((rol(A, 12) + E + rol(T[j],j)), 7);\
 	SS2 = SS1 ^ rol(A, 12);                  \
