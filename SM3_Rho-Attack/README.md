@@ -1,14 +1,14 @@
-# SM3µÄrho·½·¨¹¥»÷
+# SM3çš„rhoæ–¹æ³•æ”»å‡»
 
-## ¿âÒÀÀµ
-ÃÜÂëËã·¨¿â£º
-[snowland-smx ¡¤ PyPI](https://pypi.org/project/snowland-smx/)
+## åº“ä¾èµ–
+å¯†ç ç®—æ³•åº“ï¼š
+[snowland-smx Â· PyPI](https://pypi.org/project/snowland-smx/)
 
-## ËµÃ÷
-°´ÕÕ³£Àí£¬¸Ã·½·¨¼òµ¥´Ö±©
+## è¯´æ˜Ž
+æŒ‰ç…§å¸¸ç†ï¼Œè¯¥æ–¹æ³•ç®€å•ç²—æš´
 
-µ«Ïà¹Ø×ÊÁÏºÜÉÙ£¬ÓÚÊÇ²Î¿¼ÎªÊý²»¶àµÄÏîÄ¿
+ä½†ç›¸å…³èµ„æ–™å¾ˆå°‘ï¼ŒäºŽæ˜¯å‚è€ƒä¸ºæ•°ä¸å¤šçš„é¡¹ç›®
 
-·¢ÏÖÆä²¢Ã»ÓÐrho·½·¨¸ÅÄîÖÐµÄ¡°´ÓÒ»¸ö³õÊ¼Öµ³ö·¢£¬²»¶Ï¼ÆËãSM3Öµ¡±
+å‘çŽ°å…¶å¹¶æ²¡æœ‰rhoæ–¹æ³•æ¦‚å¿µä¸­çš„â€œä»Žä¸€ä¸ªåˆå§‹å€¼å‡ºå‘ï¼Œä¸æ–­è®¡ç®—SM3å€¼â€
 
-ÓÚÊÇÐ´ÁË rho_attack_f º¯Êý£¬ÕýÈ·ÐÔ´æÒÉ¡£
+äºŽæ˜¯å†™äº† rho_attack_f å‡½æ•°ï¼Œæ­£ç¡®æ€§å­˜ç–‘ã€‚
