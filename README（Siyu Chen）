@@ -6,7 +6,7 @@
 
 Project: implement the naïve birthday attack of reduced SM3
 
-文件见SM3_Birthday-Attack文件夹中的SM3_BirthdayAttack.py文件，参考链接：gitee.com/snowlandltd/snowland-smx-python/（装SM3相关环境）
+文件见SM3_BirthdayAttack.py文件，参考链接：gitee.com/snowlandltd/snowland-smx-python/（装SM3相关环境）
 
 
 Project: implement the Rho method of reduced SM3
