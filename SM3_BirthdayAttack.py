@@ -1,5 +1,5 @@
 from pysmx.SM3 import SM3
-#本题已预先安装相关SM3环境
+#本题已预先安装了相关环境
 #SM3安装环境相关参考链接见小组repo里面的README(Siyu Chen)文件
 #SM3具体实现代码为C++语言编写，见小组SM3_Implement.cpp文件，该文件作者为陈思宇（Siyu Chen）
 import math
