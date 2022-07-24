@@ -6,6 +6,9 @@
 
 Project: implement the naïve birthday attack of reduced SM3
 
+文件见SM3_Birthday-Attack文件夹中的SM3_BirthdayAttack.py文件，参考链接：gitee.com/snowlandltd/snowland-smx-python/（装SM3相关环境）
+
+
 Project: implement the Rho method of reduced SM3
 
 Project: implement length extension attack for SM3, SHA256, etc.
@@ -16,7 +19,7 @@ Project: Impl Merkle Tree following RFC6962
 
 Project: Try to Implement this scheme
 
-文件见siyu-chen branch，参考链接：blog.csdn.net/qq_35699583/article/details/113060927?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&utm_relevant_index=1
+文件见SM3_Implement.cpp，参考链接：blog.csdn.net/qq_35699583/article/details/113060927?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&utm_relevant_index=1
 
 
 
@@ -24,9 +27,7 @@ Project: Try to Implement this scheme
 
 Project: report on the application of this deduce technique in Ethereum with ECDSA
 
-ECDSA原理：ECDSA是ECC与DSA的结合，整个签名过程与DSA类似，所不一样的是签名中采取的算法为ECC，最后签名出来的值也是分为r,s。
-
-参考链接1：zhuanlan.zhihu.com/p/442141489
+文件见Report on Ethereum with ECDSA文件，参考链接1：zhuanlan.zhihu.com/p/442141489
 参考链接2：https://blog.csdn.net/weixin_39430411/article/details/118685484
 
 
