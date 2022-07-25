@@ -251,6 +251,8 @@ static meow_u8 MeowDefaultSeed[128] =
 	0x66, 0x36, 0x92, 0x0D, 0x87, 0x15, 0x74, 0xE6
 };
 
+void PrintHash(meow_u128 Hash);
+
 //
 // NOTE(casey): Single block version
 //
@@ -394,6 +396,23 @@ MeowHash(void *Seed128Init, meow_umm Len, void *SourceInit)
     MEOW_MIX_REG(xmm1, xmm5, xmm7, xmm2, xmm3,  xmm12, xmm13, xmm14, xmm15);
     
     MEOW_DUMP_STATE("PostAppend", xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, 0);
+
+    //PrintHash(xmm0);
+    //PrintHash(xmm1);
+	//PrintHash(xmm2);
+	//PrintHash(xmm3);
+	//PrintHash(xmm4);
+	//PrintHash(xmm5);
+	//PrintHash(xmm6);
+	//PrintHash(xmm7);
+	//PrintHash(xmm8);
+	//PrintHash(xmm9);
+	//PrintHash(xmm10);
+	//PrintHash(xmm11);
+	//PrintHash(xmm12);
+	//PrintHash(xmm13);
+	//PrintHash(xmm14);
+	//PrintHash(xmm15);
     
     //
     // NOTE(casey): Hash all full 32-byte blocks
