@@ -1,8 +1,10 @@
 网络空间安全学院 2020级4班 陈思宇 202000460119
 
 SM3_BirthdayAttack相关的SM3环境安装操作如下图所示：
+
 1、首先输入cmd进入命令提示符：
 ![截图1](https://user-images.githubusercontent.com/109191115/180785289-3575d690-b084-481f-a544-577d162de337.jpg)
+
 2、输入pip install snowland-smx进行安装（本实验相关环境在截图前已预先安装成功）：
 ![截图2](https://user-images.githubusercontent.com/109191115/180785303-2d507bf7-f33f-4e84-865d-85114b2f9829.jpg)
 
