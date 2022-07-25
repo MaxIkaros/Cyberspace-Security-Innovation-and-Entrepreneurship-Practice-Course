@@ -92,13 +92,13 @@ static void PrintKey(meow_u128 Hash1, meow_u128 Hash2) {
 /// <param name="Len">
 /// Length of message
 /// </param>
-/// <param name="SourceInit">
+/// <param name="HashedMsg">
 /// Hash value
 /// </param>
-/// <param name="mid">
+/// <param name="msg">
 /// Message
 /// </param>
-static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
+static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 
 	// NOTE(casey): xmm0-xmm7 are the hash accumulation lanes
 	meow_u128 xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
@@ -106,16 +106,17 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	meow_u128 xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15;
 
 	// Initialize the hash accumulation lanes.
-	meow_u8* rcx = (meow_u8*)SourceInit;
-	movdqu(xmm0, rcx + 0x00);
-	movdqu(xmm1, rcx + 0x10);
-	movdqu(xmm2, rcx + 0x20);
-	movdqu(xmm3, rcx + 0x30);
-	movdqu(xmm4, rcx + 0x40);
-	movdqu(xmm5, rcx + 0x50);
-	movdqu(xmm6, rcx + 0x60);
-	movdqu(xmm7, rcx + 0x70);
+	meow_u8* rcx = (meow_u8*)HashedMsg;
+	movdqu(xmm0, rcx + 0x00); // 30313630-32323032-5F747363-5F756473
+	movdqu(xmm1, rcx + 0x10); // 8000...
+	movdqu(xmm2, rcx + 0x20); // random
+	movdqu(xmm3, rcx + 0x30); // random
+	movdqu(xmm4, rcx + 0x40); // random
+	movdqu(xmm5, rcx + 0x50); // random
+	movdqu(xmm6, rcx + 0x60); // random
+	movdqu(xmm7, rcx + 0x70); // random
 
+	//cout << "Hash message and other random messages: " << endl;
 	//PrintHash(xmm0);
 	//PrintHash(xmm1);
 	//PrintHash(xmm2);
@@ -124,6 +125,7 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	//PrintHash(xmm5);
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
+	//cout << endl;
 
 	// Inverse Squeeze
 	paddq(xmm0, xmm4);
@@ -136,6 +138,7 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	paddq(xmm4, xmm6);
 	paddq(xmm5, xmm7);
 
+	//cout << "Inverse Squeeze: " << endl;
 	//PrintHash(xmm0);
 	//PrintHash(xmm1);
 	//PrintHash(xmm2);
@@ -144,6 +147,7 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	//PrintHash(xmm5);
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
+	//cout << endl;
 
 	// Inverse Finalization
 	MEOW_INV_SHUFFLE(xmm3, xmm4, xmm5, xmm7, xmm0, xmm1);
@@ -159,6 +163,7 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	MEOW_INV_SHUFFLE(xmm1, xmm2, xmm3, xmm5, xmm6, xmm7);
 	MEOW_INV_SHUFFLE(xmm0, xmm1, xmm2, xmm4, xmm5, xmm6);
 
+	//cout << "Inverse Finalization: " << endl;
 	//PrintHash(xmm0);
 	//PrintHash(xmm1);
 	//PrintHash(xmm2);
@@ -167,7 +172,13 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	//PrintHash(xmm5);
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
+	//cout << endl;
 
+	/*-------------------------------------------------------------------------------------------------------*/
+	// Honestly, I didn't understand the code for the end of the hash and the length information 
+	// in the original article, so I can only put up the original author's related process
+	/*-------------------------------------------------------------------------------------------------------*/
+	
 	// NOTE(casey): Load any less-than-32-byte residual
 	pxor_clear(xmm9, xmm9);
 	pxor_clear(xmm11, xmm11);
@@ -178,13 +189,13 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	// to the & 0xf on the align computation.
 
 	// NOTE(casey): First, we have to load the part that is _not_ 16-byte aligned
-	meow_u8* Last = (meow_u8*)mid + (Len & ~0xf);
+	meow_u8* Last = (meow_u8*)msg + (Len & ~0xf);
 	int unsigned Len8 = (Len & 0xf);
 	if (Len8) {
 		// NOTE(casey): Load the mask early
 		movdqu(xmm8, &MeowMaskLen[0x10 - Len8]);
 
-		meow_u8* LastOk = (meow_u8*)((((meow_umm)(((meow_u8*)mid) + Len - 1)) | (MEOW_PAGESIZE - 1)) - 16);
+		meow_u8* LastOk = (meow_u8*)((((meow_umm)(((meow_u8*)msg) + Len - 1)) | (MEOW_PAGESIZE - 1)) - 16);
 		int Align = (Last > LastOk) ? ((int)(meow_umm)Last) & 0xf : 0;
 		movdqu(xmm10, &MeowShiftAdjust[Align]);
 		movdqu(xmm9, Last - Align);
@@ -216,6 +227,10 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	palignr(xmm12, xmm15, 15);
 	palignr(xmm14, xmm15, 1);
 
+	/*-------------------------------------------------------------------------------------------------------*/
+	// iijyou desu
+	/*-------------------------------------------------------------------------------------------------------*/
+
 	// Inverse Absorb message
 
 	// Append the length, to avoid problems with our 32-byte padding
@@ -233,24 +248,21 @@ static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
 	
+	cout << "==========================================================================================" << endl;
+	cout << "KEY: " << endl;
 	PrintKey(xmm0, xmm1);
 	PrintKey(xmm2, xmm3);
 	PrintKey(xmm4, xmm5);
 	PrintKey(xmm6, xmm7);
+	cout << endl;
+	cout << "==========================================================================================" << endl;
 
-	// Key cannot be returned
+	
+	return;
 }
 
 
 int main() {
-
-	int Size = 32;
-
-	//char* message = new char[Size];
-	//int MsgLen = strlen(MSG); // 23
-	//memset(message, 0, Size);
-	////memset(message, (char)0, Size);
-	//memcpy(message, MSG, strlen(MSG));
 
 	int MsgLen = strlen(MSG); // 23
 	char* message = new char[MsgLen + 1];
@@ -265,7 +277,7 @@ int main() {
 	cout << "Message: " << message << endl;
 	cout << "Hashed Message: " << Hashed_message << endl;
 	
-	InvToGetKey(Size, Hashed_message, message);
+	InvToGetKey(MsgLen, Hashed_message, message);
 
 	return 0;
 }
