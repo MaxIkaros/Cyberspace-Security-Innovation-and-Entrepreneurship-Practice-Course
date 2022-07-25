@@ -265,12 +265,7 @@ int main() {
 	cout << "Message: " << message << endl;
 	cout << "Hashed Message: " << Hashed_message << endl;
 	
-	char* Key = new char[128];
-	memset(Key, 0, 128);
 	InvToGetKey(Size, Hashed_message, message);
-
-	// Key cannot be returned
-	//cout << "Key: " << Key << endl;
 
 	return 0;
 }
