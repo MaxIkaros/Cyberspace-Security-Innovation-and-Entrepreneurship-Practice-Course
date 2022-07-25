@@ -21,15 +21,23 @@ static void PrintHash(meow_u128 Hash) {
 
 
 int main() {
+    int BufSize = 64;
+	char* Buffer = new char[BufSize + 1];
+	memset(Buffer, 0, BufSize + 1);
+	
+    int KeySize = 256;
+	char* Key = new char[KeySize + 1];
+	memset(Key, 0, KeySize + 1);
+	
     // NOTE(casey): Make a buffer with repeating numbers.
-    int Size = 16000;
-    char* Buffer = (char*)malloc(Size);
-    for (int Index = 0;
-        Index < Size;
-        ++Index)
-    {
-        Buffer[Index] = (char)Index;
-    }
+    //int Size = 16000;
+    //char* Buffer = (char*)malloc(Size);
+    //for (int Index = 0;
+    //    Index < Size;
+    //    ++Index)
+    //{
+    //    Buffer[Index] = (char)Index;
+    //}
 
     // NOTE(casey): Ask Meow for the hash
     meow_u128 Hash = MeowHash(MeowDefaultSeed, Size, Buffer);
