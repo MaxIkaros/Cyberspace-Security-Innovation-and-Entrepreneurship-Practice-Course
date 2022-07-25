@@ -8,7 +8,7 @@
 
 ✅Project: implement the Rho method of reduced SM3
 
-Project: implement length extension attack for SM3, SHA256, etc.
+✅Project: implement length extension attack for SM3, SHA256, etc.
 
 ✅Project: do your best to optimize SM3 implementation (software)
 

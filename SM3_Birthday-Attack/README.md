@@ -1,17 +1,27 @@
-# SM3���չ���
+# SM3生日攻击
 
-## ��������
-�����㷨�⣺
-[snowland-smx �� PyPI](https://pypi.org/project/snowland-smx/)
+## 库依赖：
 
-## �㷨���ݣ�
-����Ҫ��ײ����n bits�����ַ���
-1. �����������У�����Ϊsqrt(n)��ÿ��Ԫ��Ϊn bits���ַ�����
-2. �����������еĹ�ϣֵ��Ϊ����������
-3. �󽻼�
+密码算法库：
+[snowland-smx · PyPI](https://pypi.org/project/snowland-smx/)
 
-##���
+## 算法内容：
 
+假设要碰撞的是n bits长的字符串
 
-## ����
-�ֳ��
+1. 生成两个序列，长度为sqrt(n)，每个元素为n bits长字符串。
+2. 计算两个序列的哈希值，为两个新序列
+3. 求交集
+
+更新：
+
+1. 将序列修改为字典，方便对应哈希值
+2. 添加了另一种方法, 不使用两个序列，而是一个序列。
+
+## 结果
+
+![jieguo](ba.png)
+
+## 作者
+
+贾晨铮(cipeizheng)
