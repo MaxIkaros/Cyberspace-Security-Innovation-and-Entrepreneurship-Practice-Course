@@ -95,13 +95,10 @@ static void PrintKey(meow_u128 Hash1, meow_u128 Hash2) {
 /// <param name="SourceInit">
 /// Hash value
 /// </param>
-/// <param name="SourceEnd">
-/// Key
-/// </param>
 /// <param name="mid">
 /// Message
 /// </param>
-static void InvToGetKey(meow_umm Len, void* SourceInit, void* SourceEnd, void* mid) {
+static void InvToGetKey(meow_umm Len, void* SourceInit, void* mid) {
 
 	// NOTE(casey): xmm0-xmm7 are the hash accumulation lanes
 	meow_u128 xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
@@ -249,24 +246,26 @@ int main() {
 
 	int Size = 32;
 
-	char* message = new char[Size];
-	int MsgLen = strlen(MSG); // 23
-	memset(message, 0, Size);
-	//memset(message, (char)0, Size);
-	memcpy(message, MSG, strlen(MSG));
+	//char* message = new char[Size];
+	//int MsgLen = strlen(MSG); // 23
+	//memset(message, 0, Size);
+	////memset(message, (char)0, Size);
+	//memcpy(message, MSG, strlen(MSG));
 
-	char* hashed_message = new char[16];
-	memset(hashed_message, 0, 16);
-	memcpy(hashed_message, Hashed_msg, strlen(Hashed_msg));
+	int MsgLen = strlen(MSG); // 23
+	char* message = new char[MsgLen + 1];
+	memset(message, 0, MsgLen + 1);
+	memcpy(message, MSG, MsgLen);
+
+	int Hashed_MsgLen = strlen(Hashed_msg);
+	char* Hashed_message = new char[Hashed_MsgLen + 1];
+	memset(Hashed_message, 0, Hashed_MsgLen + 1);
+	memcpy(Hashed_message, Hashed_msg, Hashed_MsgLen);
 	
 	cout << "Message: " << message << endl;
+	cout << "Hashed Message: " << Hashed_message << endl;
 	
-	char* Key = new char[128];
-	memset(Key, '0', 128);
-	InvToGetKey(Size, hashed_message, Key, message);
-
-	// Key cannot be returned
-	//cout << "Key: " << Key << endl;
+	InvToGetKey(Size, Hashed_message, message);
 
 	return 0;
 }
