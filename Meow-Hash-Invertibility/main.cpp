@@ -239,6 +239,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	// To maintain the mix-down pattern, we always Meow Mix the less-than-32-byte residual, even if it was empty
 	MEOW_MIX_REG(xmm0, xmm4, xmm6, xmm1, xmm2, xmm8, xmm9, xmm10, xmm11);
 
+	//cout << "Inverse Absorb message: " << endl;
 	//PrintHash(xmm0);
 	//PrintHash(xmm1);
 	//PrintHash(xmm2);
@@ -247,6 +248,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	//PrintHash(xmm5);
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
+	//cout << endl;
 	
 	cout << "==========================================================================================" << endl;
 	cout << "KEY: " << endl;
