@@ -43,7 +43,6 @@ int main() {
     PrintHash(Hash);
 
     free(Buffer);
-
 	
 	return 0;
 }
