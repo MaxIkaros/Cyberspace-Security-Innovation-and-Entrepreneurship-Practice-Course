@@ -18,7 +18,7 @@ const char* Hashed_msg = "sdu_cst_20220610";
 
 #define movdqu(A, B)	    A = _mm_loadu_si128((__m128i *)(B))
 #define pxor(A, B)	        A = _mm_xor_si128(A, B)
-#define paddq(A, B)	        A = _mm_add_epi64(A, B)
+#define psubq(A, B)	        A = _mm_sub_epi64(A, B)
 #define aesenc(A, B)	    A = _mm_aesenc_si128(A, B)
 #define pxor_clear(A, B)	A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
 #define movq(A, B)          A = _mm_set_epi64x(0, B);
@@ -30,9 +30,9 @@ const char* Hashed_msg = "sdu_cst_20220610";
 #define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
 pxor(r1, r2);   \
 pxor(r4, r1);   \
-paddq(r5, r6);  \
+psubq(r5, r6);  \
 aesenc(r4, r6); \
-paddq(r1, r5);  \
+psubq(r1, r5);  \
 pxor(r0, r4);   \
 aesenc(r0, r1); \
 pxor(r0, r1);
@@ -41,13 +41,13 @@ pxor(r0, r1);
 #define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier()
 #define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
-paddq(r5, i3);               \
+psubq(r5, i3);               \
 pxor(r2, r4);                \
 aesenc(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
 pxor(r2, r4);                \
 pxor(r2, i2);                \
-paddq(r3, i1);               \
+psubq(r3, i1);               \
 pxor(r1, r2);                \
 aesenc(r1, r2);              \
 INSTRUCTION_REORDER_BARRIER; \
@@ -116,15 +116,15 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	//cout << endl;
 
 	// Inverse Squeeze
-	paddq(xmm0, xmm4);
+	psubq(xmm0, xmm4);
 
 	pxor(xmm0, xmm1);
 	pxor(xmm4, xmm5);
 
-	paddq(xmm0, xmm2);
-	paddq(xmm1, xmm3);
-	paddq(xmm4, xmm6);
-	paddq(xmm5, xmm7);
+	psubq(xmm0, xmm2);
+	psubq(xmm1, xmm3);
+	psubq(xmm4, xmm6);
+	psubq(xmm5, xmm7);
 
 	//cout << "Inverse Squeeze: " << endl;
 	//PrintHash(xmm0);
@@ -168,7 +168,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	// meow_hash_x64_aesni.h.
 	// BEGIN
 	/*-------------------------------------------------------------------------------------------------------*/
-	
+
 	// NOTE(casey): Load any less-than-32-byte residual
 	pxor_clear(xmm9, xmm9);
 	pxor_clear(xmm11, xmm11);
@@ -239,7 +239,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
 	//cout << endl;
-	
+
 	cout << "==========================================================================================" << endl;
 	cout << "KEY: " << endl;
 	PrintKey(xmm0, xmm1);
@@ -249,8 +249,6 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	cout << endl;
 	cout << "==========================================================================================" << endl;
 
-	
-	
 	return;
 }
 
@@ -266,11 +264,15 @@ int main() {
 	char* Hashed_message = new char[Hashed_MsgLen + 1];
 	memset(Hashed_message, 0, Hashed_MsgLen + 1);
 	memcpy(Hashed_message, Hashed_msg, Hashed_MsgLen);
-	
+
 	cout << "Message: " << message << endl;
 	cout << "Hashed Message: " << Hashed_message << endl;
-	
+
 	InvToGetKey(MsgLen, Hashed_message, message);
+	//	1D41D39CAAFA345E910B12931FA48960E69A41F04DA2820C6E57684635554B54
+	//	A42D5947375862999C43BD535BD8B06A79CE1FE4C3918589E41761CE2AD045E9
+	//	BE6C92388741D67CFB528162B96FBAC409B4C28A538BE482B4E3DF06A639BB52
+	//	7E26E1BBC65F7450DD1522890ED9550E7A597BB6AFF644325C3EF83066E5DD7E
 
 	return 0;
 }
