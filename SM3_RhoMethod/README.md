@@ -14,11 +14,11 @@ if a == b:
     print("寻找n比特碰撞成功")
     
 **当碰撞比特数为8bit时，代码运行情况如下：**
-![截图1](https://user-images.githubusercontent.com/109191115/180963301-8f28028f-e550-4ab8-a532-911272d84ba7.png)
+![截图1](https://user-images.githubusercontent.com/109191115/180974142-6d0193e0-3293-4339-8c74-f0c8cf776c94.png)
 **当碰撞比特数为16bit时，代码运行情况如下：**
-![截图2](https://user-images.githubusercontent.com/109191115/180963515-0e3b9055-3d14-4a65-bf54-8299819b31cb.png)
+![截图2](https://user-images.githubusercontent.com/109191115/180974265-69b7c59a-ed69-4f4a-a235-33df064d39b9.png)
 **当碰撞比特数为32bit时，代码运行情况如下：**
-![截图3](https://user-images.githubusercontent.com/109191115/180963636-a334416c-48de-4fbd-b082-0592e9819cc1.png)
+![截图3](https://user-images.githubusercontent.com/109191115/180974210-2a3eb314-fd68-4737-b531-504563eedb65.png)
 
 实验结论：
 =
