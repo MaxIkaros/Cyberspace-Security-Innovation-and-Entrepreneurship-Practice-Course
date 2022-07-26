@@ -54,17 +54,6 @@ INSTRUCTION_REORDER_BARRIER; \
 pxor(r1, r2);
 // Xor one more time, so xor back
 
-#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-paddq(r5, r6);  \
-aesenc(r4, r6); \
-paddq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
-// Xor one more time, so in the last line xor back
-
 static void PrintHash(meow_u128 Hash) {
 	printf("    %08X-%08X-%08X-%08X\n",
 		MeowU32From(Hash, 3),
@@ -83,7 +72,6 @@ static void PrintKey(meow_u128 Hash1, meow_u128 Hash2) {
 		MeowU32From(Hash2, 2),
 		MeowU32From(Hash2, 1),
 		MeowU32From(Hash2, 0));
-
 }
 
 /// <summary>
@@ -176,7 +164,9 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 
 	/*-------------------------------------------------------------------------------------------------------*/
 	// Honestly, I didn't understand the code for the end of the hash and the length information 
-	// in the original article, so I can only put up the original author's related process
+	// in the original article, so I can only put up the original author's related process from
+	// meow_hash_x64_aesni.h.
+	// BEGIN
 	/*-------------------------------------------------------------------------------------------------------*/
 	
 	// NOTE(casey): Load any less-than-32-byte residual
@@ -228,7 +218,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	palignr(xmm14, xmm15, 1);
 
 	/*-------------------------------------------------------------------------------------------------------*/
-	// iijyou desu
+	// END
 	/*-------------------------------------------------------------------------------------------------------*/
 
 	// Inverse Absorb message
@@ -259,6 +249,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	cout << endl;
 	cout << "==========================================================================================" << endl;
 
+	
 	
 	return;
 }
