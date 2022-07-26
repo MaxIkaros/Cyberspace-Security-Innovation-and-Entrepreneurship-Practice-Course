@@ -229,7 +229,6 @@ pxor(r4, r6);   \
 aesdec(r4, r2); \
 paddq(r5, r6);  \
 pxor(r2, r3)
-
 //#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
 //pxor(r1, r2);     \
 //aesenc(r4, r1);   \
@@ -515,7 +514,6 @@ static void Invertibility(meow_umm Len, void* msg) {
 	
 	return;
 }
-
 
 //
 // NOTE(casey): Single block version
