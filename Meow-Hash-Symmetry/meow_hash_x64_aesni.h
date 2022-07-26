@@ -190,6 +190,16 @@ INSTRUCTION_REORDER_BARRIER; \
 paddq(r5, i3);               \
 pxor(r4, i4);
 
+//#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+//pxor(r4, i4);                \
+//psubq(r5, i3);               \
+//aesenc(r2, r4);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, i2);                \
+//psubq(r3, i1);               \
+//aesenc(r1, r2);              \
+//INSTRUCTION_REORDER_BARRIER;
+//// Xor one more time, so xor back
 #define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
 psubq(r5, i3);               \
@@ -219,17 +229,36 @@ pxor(r4, r6);   \
 aesdec(r4, r2); \
 paddq(r5, r6);  \
 pxor(r2, r3)
-
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);     \
+//aesenc(r4, r1);   \
+//psubq(r5, r6);    \
+//pxor(r4, r6);     \
+//psubq(r1, r5);    \
+//aesenc(r0, r4);
+//// Xor one more time, so in the last line xor back
 #define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
 pxor(r1, r2);   \
 pxor(r4, r1);   \
+aesenc(r4, r1); \
+pxor(r4, r1);   \
 psubq(r5, r6);  \
-aesenc(r4, r6); \
+pxor(r4, r6);   \
 psubq(r1, r5);  \
 pxor(r0, r4);   \
 aesenc(r0, r1); \
 pxor(r0, r1);
 // Xor one more time, so in the last line xor back
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);   \
+//pxor(r4, r1);   \
+//psubq(r5, r6);  \
+//aesenc(r4, r6); \
+//psubq(r1, r5);  \
+//pxor(r0, r4);   \
+//aesenc(r0, r1); \
+//pxor(r0, r1);
+//// Xor one more time, so in the last line xor back
 
 
 #if MEOW_DUMP
@@ -437,7 +466,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 	rax += BlockCount * 0x100;
 	if (BlockCount > MEOW_PREFETCH_LIMIT) {
 		// NOTE(casey): For large input, modern Intel x64's can't hit full speed without prefetching, so we use this loop
-		while (BlockCount > i) {
+		while (BlockCount >= i) {
 			// Store data in cache in advance.
 			prefetcht0(rax - MEOW_PREFETCH + 0x00);
 			prefetcht0(rax - MEOW_PREFETCH + 0x40);
@@ -459,7 +488,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 	}
 	else {
 		// NOTE(casey): For small input, modern Intel x64's can't hit full speed _with_ prefetching (because of port pressure), so we use this loop.
-		while (BlockCount > i) {
+		while (BlockCount >= i) {
 			MEOW_INV_MIX(xmm7, xmm3, xmm5, xmm0, xmm1, rax + 0xe0);
 			MEOW_INV_MIX(xmm6, xmm2, xmm4, xmm7, xmm0, rax + 0xc0);
 			MEOW_INV_MIX(xmm5, xmm1, xmm3, xmm6, xmm7, rax + 0xa0);
