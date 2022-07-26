@@ -16,7 +16,7 @@ SM3_BirthdayAttack相关的代码运行情况如下图所示（代码和相关�
 -
 ![截图3](https://user-images.githubusercontent.com/109191115/180785332-9874e0ca-f942-4a9d-a841-b45a1f014599.jpg)
 
-**注：由于作者SM3实现相关代码为C++语言，本题SM3_RhoMethod代码为Python语言，为了编写方便，故导入了pysmx模块的SM3函数进行编译，所以代码运行用时会比引用自己编写的SM3程序更短，但不影响本实验相关结论**
+**注：由于作者SM3实现相关代码为C++语言，本题SM3生日攻击代码为Python语言，为了编写方便，故导入了pysmx模块的SM3函数进行编译**
 
 具体贡献：
 =
