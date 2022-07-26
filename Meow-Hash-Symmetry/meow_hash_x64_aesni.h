@@ -229,6 +229,37 @@ pxor(r4, r6);   \
 aesdec(r4, r2); \
 paddq(r5, r6);  \
 pxor(r2, r3)
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);     \
+//aesenc(r4, r1);   \
+//psubq(r5, r6);    \
+//pxor(r4, r6);     \
+//psubq(r1, r5);    \
+//aesenc(r0, r4);
+//// Xor one more time, so in the last line xor back
+#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+pxor(r1, r2);   \
+pxor(r4, r1);   \
+aesenc(r4, r1); \
+pxor(r4, r1);   \
+psubq(r5, r6);  \
+pxor(r4, r6);   \
+psubq(r1, r5);  \
+pxor(r0, r4);   \
+aesenc(r0, r1); \
+pxor(r0, r1);
+// Xor one more time, so in the last line xor back
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);   \
+//pxor(r4, r1);   \
+//psubq(r5, r6);  \
+//aesenc(r4, r6); \
+//psubq(r1, r5);  \
+//pxor(r0, r4);   \
+//aesenc(r0, r1); \
+//pxor(r0, r1);
+//// Xor one more time, so in the last line xor back
+
 
 //#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
 //pxor(r1, r2);     \
@@ -515,7 +546,6 @@ static void Invertibility(meow_umm Len, void* msg) {
 	
 	return;
 }
-
 
 //
 // NOTE(casey): Single block version
