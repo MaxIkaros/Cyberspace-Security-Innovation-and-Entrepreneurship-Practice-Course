@@ -37,9 +37,12 @@ SM3_RhoMethod相关的SM3环境安装操作如下图所示：
 
 
 具体贡献：
+=
+SM3_RhoMethod文件夹中的SM3_RhoMethod相关的代码均由陈思宇同学单独完成，其他小组成员如有做SM3_RhoMethod相关实验项目，则相关的代码及运行相关说明情况均在其他文件夹中，本文件夹中文件均为陈思宇同学单独完成的SM3_RhoMethod版本。
 -
-**SM3_RhoMethod文件夹中的SM3_RhoMethod相关的代码均由陈思宇同学单独完成，其他小组成员如有做SM3_RhoMethod相关实验项目，则相关的代码及运行相关说明情况均在其他文件夹中，本文件夹中文件均为陈思宇同学单独完成的SM3_RhoMethod版本。**
 
+参考链接：
+-
 **参考链接1：https://gitee.com/snowlandltd/snowland-smx-python/**
 （装SM3相关环境）
 
