@@ -261,6 +261,38 @@ pxor(r0, r1);
 //// Xor one more time, so in the last line xor back
 
 
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);     \
+//aesenc(r4, r1);   \
+//psubq(r5, r6);    \
+//pxor(r4, r6);     \
+//psubq(r1, r5);    \
+//aesenc(r0, r4);
+//// Xor one more time, so in the last line xor back
+#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+pxor(r1, r2);   \
+pxor(r4, r1);   \
+aesenc(r4, r1); \
+pxor(r4, r1);   \
+psubq(r5, r6);  \
+pxor(r4, r6);   \
+psubq(r1, r5);  \
+pxor(r0, r4);   \
+aesenc(r0, r1); \
+pxor(r0, r1);
+// Xor one more time, so in the last line xor back
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);   \
+//pxor(r4, r1);   \
+//psubq(r5, r6);  \
+//aesenc(r4, r6); \
+//psubq(r1, r5);  \
+//pxor(r0, r4);   \
+//aesenc(r0, r1); \
+//pxor(r0, r1);
+//// Xor one more time, so in the last line xor back
+
+
 #if MEOW_DUMP
 struct meow_dump
 {
@@ -396,7 +428,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 	// NOTE(casey): First, we have to load the part that is _not_ 16-byte aligned
 	meow_u8* Last = (meow_u8*)msg + (Len & ~0xf);
 	int unsigned Len8 = (Len & 0xf);
-	if (Len8) {
+	if (Len8) { // unnecessary
 		// NOTE(casey): Load the mask early
 		movdqu(xmm8, &MeowMaskLen[0x10 - Len8]);
 
@@ -411,7 +443,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 	}
 
 	// NOTE(casey): Next, we have to load the part that _is_ 16-byte aligned
-	if (Len & 0x10) {
+	if (Len & 0x10) { // unnecessary
 		xmm11 = xmm9;
 		movdqu(xmm9, Last - 0x10);
 	}
@@ -460,13 +492,13 @@ static void Invertibility(meow_umm Len, void* msg) {
 	// To maintain the mix-down pattern, we always Meow Mix the less-than-32-byte residual, even if it was empty
 	MEOW_INV_MIX_REG(xmm0, xmm4, xmm6, xmm1, xmm2, xmm8, xmm9, xmm10, xmm11);
 
-// DE-Hash all full 256-byte blocks
+// DE-Hash all full 256-byte blocks (unnecessary)
 	meow_umm BlockCount = (Len >> 8);
 	meow_umm i = 0;
 	rax += BlockCount * 0x100;
 	if (BlockCount > MEOW_PREFETCH_LIMIT) {
 		// NOTE(casey): For large input, modern Intel x64's can't hit full speed without prefetching, so we use this loop
-		while (BlockCount >= i) {
+		while (BlockCount > i) {
 			// Store data in cache in advance.
 			prefetcht0(rax - MEOW_PREFETCH + 0x00);
 			prefetcht0(rax - MEOW_PREFETCH + 0x40);
@@ -488,7 +520,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 	}
 	else {
 		// NOTE(casey): For small input, modern Intel x64's can't hit full speed _with_ prefetching (because of port pressure), so we use this loop.
-		while (BlockCount >= i) {
+		while (BlockCount > i) {
 			MEOW_INV_MIX(xmm7, xmm3, xmm5, xmm0, xmm1, rax + 0xe0);
 			MEOW_INV_MIX(xmm6, xmm2, xmm4, xmm7, xmm0, rax + 0xc0);
 			MEOW_INV_MIX(xmm5, xmm1, xmm3, xmm6, xmm7, rax + 0xa0);
