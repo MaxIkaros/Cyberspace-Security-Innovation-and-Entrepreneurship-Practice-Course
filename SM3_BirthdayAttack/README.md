@@ -24,13 +24,6 @@ SM3_BirthdayAttack文件夹中的SM3生日攻击相关的代码均由陈思宇�
 -
 参考链接：
 -
-https://gitee.com/snowlandltd/snowland-smx-python/
-（装SM3相关环境）
-=======
-
-SM3_BirthdayAttack文件夹中的SM3生日攻击相关的代码均由陈思宇同学单独完成，其他小组成员如有做SM3生日攻击相关实验项目，则相关代码及运行相关说明情况均在其他文件夹中，本文件夹为陈思宇同学单独完成的SM3生日攻击版本。
--
-
-参考链接：gitee.com/snowlandltd/snowland-smx-python/（装SM3相关环境）
--
+**https://gitee.com/snowlandltd/snowland-smx-python/**
+**（装SM3相关环境）**
 
