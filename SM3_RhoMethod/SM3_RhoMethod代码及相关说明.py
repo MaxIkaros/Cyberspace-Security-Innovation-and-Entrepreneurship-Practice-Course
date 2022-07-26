@@ -16,7 +16,7 @@ def RhoMethod(n):#实现Rho Method的前n比特碰撞
         L.append(c)
         char=L[0][:n]#对SM3得到的结果进行前n位切片，用char表示
         List.append(char)#每生成一个SM3切片结果，就在列表中增加一个元素
-        a=(2*a+1)
+        a=2*a
         if char in List:
 #每次生成一个char就对列表进行寻找，如果发现已经存在，则表明已经找到碰撞，形成了环
             print("寻找",n,"比特碰撞成功")
