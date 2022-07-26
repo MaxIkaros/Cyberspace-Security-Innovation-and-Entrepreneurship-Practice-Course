@@ -19,7 +19,7 @@ def RhoMethod(n):#实现Rho Method的前n比特碰撞
         a=(2*a+1)
         if char in List:
 #每次生成一个char就对列表进行寻找，如果发现已经存在，则表明已经找到碰撞，形成了环
-            print("寻找碰撞成功")
+            print("寻找",n,"比特碰撞成功")
             return;
         print("寻找碰撞失败")
 if __name__ == '__main__':
@@ -27,4 +27,5 @@ if __name__ == '__main__':
     RhoMethod(8)#可根据需要更改碰撞比特数
     endtime=time.time()#结束时间
     time=endtime-startime#Rho Method花费的总时间
-    print("所用的时间为：", time, "s")
+    time=time*1000#为了时间表示得更精确，本题选用毫秒来表示所用时间
+    print("所用的时间为：", time, "ms")
