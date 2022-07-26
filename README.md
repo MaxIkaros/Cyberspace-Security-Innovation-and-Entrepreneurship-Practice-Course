@@ -70,7 +70,9 @@ Project: research report on MPT
 
 （葛萧遥独立完成）
 
-Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical
+✅**Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical**
+
+（葛萧遥独立完成）
 
 ## Real-world-ZK：
 
