@@ -8,19 +8,19 @@
 
 ✅Project: implement the Rho method of reduced SM3
 
-Project: implement length extension attack for SM3, SHA256, etc.
+✅Project: implement length extension attack for SM3, SHA256, etc.
 
 ✅Project: do your best to optimize SM3 implementation (software)
 
 Project: Impl Merkle Tree following RFC6962
 
-Project: Try to Implement this scheme
+✅Project: Try to Implement this scheme
 
 <!--文件见siyu-chen branch，参考链接如下：blog.csdn.net/qq_35699583/article/details/113060927?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&utm_relevant_index=1-->
 
 ## SM2：
 
-Project: report on the application of this deduce technique in Ethereum with ECDSA
+✅Project: report on the application of this deduce technique in Ethereum with ECDSA
 
 Project: impl sm2 with RFC6979
 

@@ -18,7 +18,7 @@ const char* Hashed_msg = "sdu_cst_20220610";
 
 #define movdqu(A, B)	    A = _mm_loadu_si128((__m128i *)(B))
 #define pxor(A, B)	        A = _mm_xor_si128(A, B)
-#define paddq(A, B)	        A = _mm_add_epi64(A, B)
+#define psubq(A, B)	        A = _mm_sub_epi64(A, B)
 #define aesenc(A, B)	    A = _mm_aesenc_si128(A, B)
 #define pxor_clear(A, B)	A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
 #define movq(A, B)          A = _mm_set_epi64x(0, B);
@@ -28,42 +28,49 @@ const char* Hashed_msg = "sdu_cst_20220610";
 
 
 #define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-paddq(r5, r6);  \
-aesenc(r4, r6); \
-paddq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
+pxor(r1, r2);     \
+aesenc(r4, r1);   \
+psubq(r5, r6);    \
+pxor(r4, r6);     \
+psubq(r1, r5);    \
+aesenc(r0, r4);
 // Xor one more time, so in the last line xor back
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);   \
+//pxor(r4, r1);   \
+//psubq(r5, r6);  \
+//aesenc(r4, r6); \
+//psubq(r1, r5);  \
+//pxor(r0, r4);   \
+//aesenc(r0, r1); \
+//pxor(r0, r1);
+//// Xor one more time, so in the last line xor back
 
 #define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier()
 #define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
-paddq(r5, i3);               \
-pxor(r2, r4);                \
+psubq(r5, i3);               \
 aesenc(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
-pxor(r2, r4);                \
 pxor(r2, i2);                \
-paddq(r3, i1);               \
-pxor(r1, r2);                \
+psubq(r3, i1);               \
 aesenc(r1, r2);              \
-INSTRUCTION_REORDER_BARRIER; \
-pxor(r1, r2);
+INSTRUCTION_REORDER_BARRIER;
 // Xor one more time, so xor back
-
-#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-paddq(r5, r6);  \
-aesenc(r4, r6); \
-paddq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
-// Xor one more time, so in the last line xor back
+//#define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+//pxor(r4, i4);                \
+//psubq(r5, i3);               \
+//pxor(r2, r4);                \
+//aesenc(r2, r4);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, r4);                \
+//pxor(r2, i2);                \
+//psubq(r3, i1);               \
+//pxor(r1, r2);                \
+//aesenc(r1, r2);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r1, r2);
+//// Xor one more time, so xor back
 
 static void PrintHash(meow_u128 Hash) {
 	printf("    %08X-%08X-%08X-%08X\n",
@@ -83,7 +90,6 @@ static void PrintKey(meow_u128 Hash1, meow_u128 Hash2) {
 		MeowU32From(Hash2, 2),
 		MeowU32From(Hash2, 1),
 		MeowU32From(Hash2, 0));
-
 }
 
 /// <summary>
@@ -128,15 +134,15 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	//cout << endl;
 
 	// Inverse Squeeze
-	paddq(xmm0, xmm4);
+	psubq(xmm0, xmm4);
 
 	pxor(xmm0, xmm1);
 	pxor(xmm4, xmm5);
 
-	paddq(xmm0, xmm2);
-	paddq(xmm1, xmm3);
-	paddq(xmm4, xmm6);
-	paddq(xmm5, xmm7);
+	psubq(xmm0, xmm2);
+	psubq(xmm1, xmm3);
+	psubq(xmm4, xmm6);
+	psubq(xmm5, xmm7);
 
 	//cout << "Inverse Squeeze: " << endl;
 	//PrintHash(xmm0);
@@ -176,9 +182,11 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 
 	/*-------------------------------------------------------------------------------------------------------*/
 	// Honestly, I didn't understand the code for the end of the hash and the length information 
-	// in the original article, so I can only put up the original author's related process
+	// in the original article, so I can only put up the original author's related process from
+	// meow_hash_x64_aesni.h.
+	// BEGIN
 	/*-------------------------------------------------------------------------------------------------------*/
-	
+
 	// NOTE(casey): Load any less-than-32-byte residual
 	pxor_clear(xmm9, xmm9);
 	pxor_clear(xmm11, xmm11);
@@ -228,7 +236,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	palignr(xmm14, xmm15, 1);
 
 	/*-------------------------------------------------------------------------------------------------------*/
-	// iijyou desu
+	// END
 	/*-------------------------------------------------------------------------------------------------------*/
 
 	// Inverse Absorb message
@@ -249,7 +257,7 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	//PrintHash(xmm6);
 	//PrintHash(xmm7);
 	//cout << endl;
-	
+
 	cout << "==========================================================================================" << endl;
 	cout << "KEY: " << endl;
 	PrintKey(xmm0, xmm1);
@@ -259,7 +267,6 @@ static void InvToGetKey(meow_umm Len, void* HashedMsg, void* msg) {
 	cout << endl;
 	cout << "==========================================================================================" << endl;
 
-	
 	return;
 }
 
@@ -275,11 +282,11 @@ int main() {
 	char* Hashed_message = new char[Hashed_MsgLen + 1];
 	memset(Hashed_message, 0, Hashed_MsgLen + 1);
 	memcpy(Hashed_message, Hashed_msg, Hashed_MsgLen);
-	
+
 	cout << "Message: " << message << endl;
 	cout << "Hashed Message: " << Hashed_message << endl;
-	
-	InvToGetKey(MsgLen, Hashed_message, message);
+
+	InvToGetKey(MsgLen, Hashed_message, message); // Different everytime
 
 	return 0;
 }
