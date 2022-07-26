@@ -486,7 +486,6 @@ static void Invertibility(meow_umm Len, void* msg) {
 	return;
 }
 
-
 //
 // NOTE(casey): Single block version
 //
