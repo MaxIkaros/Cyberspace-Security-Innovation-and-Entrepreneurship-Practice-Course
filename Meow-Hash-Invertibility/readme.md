@@ -20,6 +20,8 @@ Find a key with hash value “*sdu_cst_20220610*” under a message composed of 
 
 ![image-20220726181252248](README/assets/image-20220726181252248.png)
 
+（由于每次填充的内容不同，因而所生成的Key不同）
+
 ## 具体贡献说明及贡献排序
 
 全部代码及对应思路：葛萧遥-202000460091。

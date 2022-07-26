@@ -28,31 +28,49 @@ const char* Hashed_msg = "sdu_cst_20220610";
 
 
 #define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-psubq(r5, r6);  \
-aesenc(r4, r6); \
-psubq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
+pxor(r1, r2);     \
+aesenc(r4, r1);   \
+psubq(r5, r6);    \
+pxor(r4, r6);     \
+psubq(r1, r5);    \
+aesenc(r0, r4);
 // Xor one more time, so in the last line xor back
+//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
+//pxor(r1, r2);   \
+//pxor(r4, r1);   \
+//psubq(r5, r6);  \
+//aesenc(r4, r6); \
+//psubq(r1, r5);  \
+//pxor(r0, r4);   \
+//aesenc(r0, r1); \
+//pxor(r0, r1);
+//// Xor one more time, so in the last line xor back
 
 #define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier()
 #define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
 psubq(r5, i3);               \
-pxor(r2, r4);                \
 aesenc(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
-pxor(r2, r4);                \
 pxor(r2, i2);                \
 psubq(r3, i1);               \
-pxor(r1, r2);                \
 aesenc(r1, r2);              \
-INSTRUCTION_REORDER_BARRIER; \
-pxor(r1, r2);
+INSTRUCTION_REORDER_BARRIER;
 // Xor one more time, so xor back
+//#define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+//pxor(r4, i4);                \
+//psubq(r5, i3);               \
+//pxor(r2, r4);                \
+//aesenc(r2, r4);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, r4);                \
+//pxor(r2, i2);                \
+//psubq(r3, i1);               \
+//pxor(r1, r2);                \
+//aesenc(r1, r2);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r1, r2);
+//// Xor one more time, so xor back
 
 static void PrintHash(meow_u128 Hash) {
 	printf("    %08X-%08X-%08X-%08X\n",
@@ -268,11 +286,7 @@ int main() {
 	cout << "Message: " << message << endl;
 	cout << "Hashed Message: " << Hashed_message << endl;
 
-	InvToGetKey(MsgLen, Hashed_message, message);
-	//	1D41D39CAAFA345E910B12931FA48960E69A41F04DA2820C6E57684635554B54
-	//	A42D5947375862999C43BD535BD8B06A79CE1FE4C3918589E41761CE2AD045E9
-	//	BE6C92388741D67CFB528162B96FBAC409B4C28A538BE482B4E3DF06A639BB52
-	//	7E26E1BBC65F7450DD1522890ED9550E7A597BB6AFF644325C3EF83066E5DD7E
+	InvToGetKey(MsgLen, Hashed_message, message); // Different everytime
 
 	return 0;
 }
