@@ -175,6 +175,7 @@
 #define pshufb(A, B)        A = _mm_shuffle_epi8(A, B)
 #define pxor(A, B)          A = _mm_xor_si128(A, B)
 #define paddq(A, B)         A = _mm_add_epi64(A, B)
+#define psubq(A, B)         A = _mm_sub_epi64(A, B)
 #define pand(A, B)          A = _mm_and_si128(A, B)
 #define palignr(A, B, i)    A = _mm_alignr_epi8(A, B, i)
 #define pxor_clear(A, B)    A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
@@ -191,13 +192,13 @@ pxor(r4, i4);
 
 #define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
-paddq(r5, i3);               \
+psubq(r5, i3);               \
 pxor(r2, r4);                \
 aesenc(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
 pxor(r2, r4);                \
 pxor(r2, i2);                \
-paddq(r3, i1);               \
+psubq(r3, i1);               \
 pxor(r1, r2);                \
 aesenc(r1, r2);              \
 INSTRUCTION_REORDER_BARRIER; \
@@ -222,9 +223,9 @@ pxor(r2, r3)
 #define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
 pxor(r1, r2);   \
 pxor(r4, r1);   \
-paddq(r5, r6);  \
+psubq(r5, r6);  \
 aesenc(r4, r6); \
-paddq(r1, r5);  \
+psubq(r1, r5);  \
 pxor(r0, r4);   \
 aesenc(r0, r1); \
 pxor(r0, r1);
@@ -337,6 +338,16 @@ static void Invertibility(meow_umm Len, void* msg) {
 	movdqu(xmm6, MeowMixResult + 0x60);
 	movdqu(xmm7, MeowMixResult + 0x70);
 
+	printf("\n");
+	PrintHash(xmm0);
+	PrintHash(xmm1);
+	PrintHash(xmm2);
+	PrintHash(xmm3);
+	PrintHash(xmm4);
+	PrintHash(xmm5);
+	PrintHash(xmm6);
+	PrintHash(xmm7);
+
 	/*-------------------------------------------------------------------------------------------------------*/
 	// Honestly, I didn't understand the code for the end of the hash and the length information 
 	// in the original article, so I can only put up the original author's related process from
@@ -396,19 +407,37 @@ static void Invertibility(meow_umm Len, void* msg) {
 // END
 	/*-------------------------------------------------------------------------------------------------------*/
 
+	printf("\n");
+	PrintHash(xmm0);
+	PrintHash(xmm1);
+	PrintHash(xmm2);
+	PrintHash(xmm3);
+	PrintHash(xmm4);
+	PrintHash(xmm5);
+	PrintHash(xmm6);
+	PrintHash(xmm7);
+	PrintHash(xmm8);
+	PrintHash(xmm9);
+	PrintHash(xmm10);
+	PrintHash(xmm11);
+	PrintHash(xmm12);
+	PrintHash(xmm13);
+	PrintHash(xmm14);
+	PrintHash(xmm15);
+
 // Inverse Absorb message
 	// Append the length, to avoid problems with our 32-byte padding
 	MEOW_INV_MIX_REG(xmm1, xmm5, xmm7, xmm2, xmm3, xmm12, xmm13, xmm14, xmm15);
 	// To maintain the mix-down pattern, we always Meow Mix the less-than-32-byte residual, even if it was empty
 	MEOW_INV_MIX_REG(xmm0, xmm4, xmm6, xmm1, xmm2, xmm8, xmm9, xmm10, xmm11);
 
-// NOTE(casey): DE-Hash all full 256-byte blocks
+// DE-Hash all full 256-byte blocks
 	meow_umm BlockCount = (Len >> 8);
 	meow_umm i = 0;
 	rax += BlockCount * 0x100;
 	if (BlockCount > MEOW_PREFETCH_LIMIT) {
 		// NOTE(casey): For large input, modern Intel x64's can't hit full speed without prefetching, so we use this loop
-		while (BlockCount--) {
+		while (BlockCount > i) {
 			// Store data in cache in advance.
 			prefetcht0(rax - MEOW_PREFETCH + 0x00);
 			prefetcht0(rax - MEOW_PREFETCH + 0x40);
@@ -425,11 +454,12 @@ static void Invertibility(meow_umm Len, void* msg) {
 			MEOW_INV_MIX(xmm0, xmm4, xmm6, xmm1, xmm2, rax + 0x00);
 
 			rax -= 0x100;
+			i++;
 		}
 	}
 	else {
 		// NOTE(casey): For small input, modern Intel x64's can't hit full speed _with_ prefetching (because of port pressure), so we use this loop.
-		while (BlockCount--) {
+		while (BlockCount > i) {
 			MEOW_INV_MIX(xmm7, xmm3, xmm5, xmm0, xmm1, rax + 0xe0);
 			MEOW_INV_MIX(xmm6, xmm2, xmm4, xmm7, xmm0, rax + 0xc0);
 			MEOW_INV_MIX(xmm5, xmm1, xmm3, xmm6, xmm7, rax + 0xa0);
@@ -440,6 +470,7 @@ static void Invertibility(meow_umm Len, void* msg) {
 			MEOW_INV_MIX(xmm0, xmm4, xmm6, xmm1, xmm2, rax + 0x00);
 
 			rax -= 0x100;
+			i++;
 		}
 	}
 
