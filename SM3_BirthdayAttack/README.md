@@ -4,7 +4,6 @@
 
 SM3_BirthdayAttack相关的SM3环境安装操作如下图所示：
 -
-
 **1、首先输入cmd进入命令提示符：**
 ![截图1](https://user-images.githubusercontent.com/109191115/180785289-3575d690-b084-481f-a544-577d162de337.jpg)
 
