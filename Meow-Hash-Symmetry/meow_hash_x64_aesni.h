@@ -190,16 +190,18 @@ INSTRUCTION_REORDER_BARRIER; \
 paddq(r5, i3);               \
 pxor(r4, i4);
 
-#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
-pxor(r4, i4);                \
-psubq(r5, i3);               \
-INSTRUCTION_REORDER_BARRIER; \
-aesenc(r2, r4);              \
-pxor(r2, i2);                \
-psubq(r3, i1);               \
-INSTRUCTION_REORDER_BARRIER; \
-aesenc(r1, r2);              
-// Xor one more time, so xor back
+// Completely modified (WRONG)
+//#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+//pxor(r4, i4);                \
+//psubq(r5, i3);               \
+//aesenc(r2, r4);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, i2);                \
+//psubq(r3, i1);               \
+//aesenc(r1, r2);				 \
+//INSTRUCTION_REORDER_BARRIER; 
+
+// 2 Xor's
 //#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 //pxor(r4, i4);                \
 //psubq(r5, i3);               \
@@ -215,7 +217,33 @@ aesenc(r1, r2);
 //pxor(r1, r2);
 //// Xor one more time, so xor back
 
-// forward
+// 1 Xor's (latter)
+#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+pxor(r4, i4);                \
+psubq(r5, i3);               \
+pxor(r2, r4);                \
+aesenc(r2, r4);              \
+INSTRUCTION_REORDER_BARRIER; \
+pxor(r2, i2);                \
+psubq(r3, i1);               \
+pxor(r1, r2);                \
+aesenc(r1, r2);              \
+INSTRUCTION_REORDER_BARRIER; 
+
+// 1 Xor's (former) (WRONG)
+//#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
+//pxor(r4, i4);                \
+//psubq(r5, i3);               \
+//aesenc(r2, r4);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, r4);                \
+//pxor(r2, i2);                \
+//psubq(r3, i1);               \
+//aesenc(r1, r2);              \
+//INSTRUCTION_REORDER_BARRIER; \
+//pxor(r1, r2);
+//// Xor one more time, so xor back
+
 #define MEOW_MIX(r1, r2, r3, r4, r5,  ptr) \
 MEOW_MIX_REG(r1, r2, r3, r4, r5, _mm_loadu_si128( (__m128i *) ((ptr) + 15) ), _mm_loadu_si128( (__m128i *) ((ptr) + 0)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 1)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 16) ))
 
