@@ -44,6 +44,7 @@ SM3_RhoMethod文件夹中的SM3_RhoMethod相关的代码均由陈思宇同学单
 参考链接：
 -
 **参考链接1：https://gitee.com/snowlandltd/snowland-smx-python/**
-（装SM3相关环境）
+**（装SM3相关环境）**
 
 **参考链接2：https://xz.aliyun.com/t/2780?page=1**
+**（Pollard Rho算法简析）**

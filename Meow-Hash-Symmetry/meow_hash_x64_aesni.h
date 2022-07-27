@@ -194,8 +194,10 @@ pxor(r4, i4);
 //#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 //pxor(r4, i4);                \
 //psubq(r5, i3);               \
+//pxor(r2, r4);                \
 //aesenc(r2, r4);              \
 //INSTRUCTION_REORDER_BARRIER; \
+//pxor(r2, r4);                \
 //pxor(r2, i2);                \
 //psubq(r3, i1);               \
 //aesenc(r1, r2);				 \
