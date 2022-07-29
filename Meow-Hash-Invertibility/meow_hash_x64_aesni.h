@@ -145,7 +145,8 @@
 #error Cannot determine architecture to use!
 #endif
 
-#define MeowU32From(A, I) (_mm_extract_epi32((A), (I)))
+#define MeowU8From(A, I)         (_mm_extract_epi8((A), (I)))
+#define MeowU32From(A, I)        (_mm_extract_epi32((A), (I)))
 #define MeowHashesAreEqual(A, B) (_mm_movemask_epi8(_mm_cmpeq_epi8((A), (B))) == 0xFFFF)
 
 #if !defined INSTRUCTION_REORDER_BARRIER
@@ -166,26 +167,26 @@
 
 #endif
 
-#define prefetcht0(A) _mm_prefetch((char *)(A), _MM_HINT_T0)
-#define movdqu(A, B)  A = _mm_loadu_si128((__m128i *)(B))
-#define movdqu_mem(A, B)  _mm_storeu_si128((__m128i *)(A), B)
-#define movq(A, B) A = _mm_set_epi64x(0, B);
-#define aesdec(A, B)  A = _mm_aesdec_si128(A, B)
-#define pshufb(A, B)  A = _mm_shuffle_epi8(A, B)
-#define pxor(A, B)    A = _mm_xor_si128(A, B)
-#define paddq(A, B) A = _mm_add_epi64(A, B)
-#define pand(A, B)    A = _mm_and_si128(A, B)
-#define palignr(A, B, i) A = _mm_alignr_epi8(A, B, i)
+#define prefetcht0(A)           _mm_prefetch((char *)(A), _MM_HINT_T0)
+#define movdqu(A, B)        A = _mm_loadu_si128((__m128i *)(B))
+#define movdqu_mem(A, B)        _mm_storeu_si128((__m128i *)(A), B)
+#define movq(A, B)          A = _mm_set_epi64x(0, B);
+#define aesdec(A, B)        A = _mm_aesdec_si128(A, B)
+#define pshufb(A, B)        A = _mm_shuffle_epi8(A, B)
+#define pxor(A, B)          A = _mm_xor_si128(A, B)
+#define paddq(A, B)         A = _mm_add_epi64(A, B)
+#define pand(A, B)          A = _mm_and_si128(A, B)
+#define palignr(A, B, i)    A = _mm_alignr_epi8(A, B, i)
 #define pxor_clear(A, B)    A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
 
 #define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
-aesdec(r1, r2); \
+aesdec(r1, r2);              \
 INSTRUCTION_REORDER_BARRIER; \
-paddq(r3, i1); \
-pxor(r2, i2); \
-aesdec(r2, r4); \
+paddq(r3, i1);               \
+pxor(r2, i2);                \
+aesdec(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
-paddq(r5, i3); \
+paddq(r5, i3);               \
 pxor(r4, i4);
 
 #define MEOW_MIX(r1, r2, r3, r4, r5,  ptr) \
@@ -193,10 +194,10 @@ MEOW_MIX_REG(r1, r2, r3, r4, r5, _mm_loadu_si128( (__m128i *) ((ptr) + 15) ), _m
 
 #define MEOW_SHUFFLE(r1, r2, r3, r4, r5, r6) \
 aesdec(r1, r4); \
-paddq(r2, r5); \
-pxor(r4, r6); \
+paddq(r2, r5);  \
+pxor(r4, r6);   \
 aesdec(r4, r2); \
-paddq(r5, r6); \
+paddq(r5, r6);  \
 pxor(r2, r3)
 
 #if MEOW_DUMP
