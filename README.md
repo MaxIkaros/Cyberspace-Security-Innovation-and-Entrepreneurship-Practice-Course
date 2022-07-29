@@ -23,7 +23,7 @@
 |    2     | Implement the Rho method of reduced SM3                      |                                                              |        | ✅      | ✅      |        |
 |    3     | Implement length extension attack for SM3, SHA256, etc       |                                                              |        | ✅      |        |        |
 |    4     | Do your best to optimize SM3 implementation (software)       |                                                              |        | ✅      |        |        |
-|    5     | Impl Merkle Tree following RFC6962                           |                                                              |        |        |        |        |
+|    5     | Impl Merkle Tree following RFC6962                           |                                                              |        | ✅      |        |        |
 |    6     | Try to Implement this scheme                                 |                                                              |        |        | ✅      |        |
 |    7     | Report on the application of this deduce technique in Ethereum with ECDSA | 陈思宇：[SM2_Report on Ethereum with ECDSA](https://github.com/MaxIkaros/Cyberspace-Security-Innovation-and-Entrepreneurship-Practice-Course/tree/main/SM2_Report%20on%20Ethereum%20with%20ECDSA) |        |        | ✅      |        |
 |    8     | Impl sm2 with RFC6979                                        | 贾晨铮：[SM2_implement](https://github.com/MaxIkaros/Cyberspace-Security-Innovation-and-Entrepreneurship-Practice-Course/tree/main/SM2_implement) |        | ✅      |        |        |
