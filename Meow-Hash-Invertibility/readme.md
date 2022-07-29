@@ -2,7 +2,7 @@
 
 ## 题目对应
 
-![image-20220725151357310](./README/assets/image-20220725151357310.png)
+![image-20220725151357310](README/assets/image-20220725151357310.png)
 
 Find a key with hash value “*sdu_cst_20220610*” under a message composed of *your name* followed by *your student ID*. For example, “*San Zhan 202000460001*”.
 
