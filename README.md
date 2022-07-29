@@ -22,7 +22,7 @@ Project: Try to Implement this scheme
 
 Project: report on the application of this deduce technique in Ethereum with ECDSA
 
-Project: impl sm2 with RFC6979
+✅Project: impl sm2 with RFC6979
 
 Project: verify the above pitfalls with proof-of-concept code
 
