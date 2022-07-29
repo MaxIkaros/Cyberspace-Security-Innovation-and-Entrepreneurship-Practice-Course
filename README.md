@@ -9,8 +9,8 @@
 （陈思宇独立完成）
 （贾晨铮独立完成）
 
-✅**Project: implement the Rho method of reduced SM3**
 
+✅**Project: implement the Rho method of reduced SM3**
 （陈思宇独立完成）
 （贾晨铮独立完成）
 
@@ -36,7 +36,9 @@ Project: Impl Merkle Tree following RFC6962
 
 （陈思宇独立完成）
 
-Project: impl sm2 with RFC6979
+✅**Project: impl sm2 with RFC6979**
+
+（贾晨铮独立完成）
 
 Project: verify the above pitfalls with proof-of-concept code
 
