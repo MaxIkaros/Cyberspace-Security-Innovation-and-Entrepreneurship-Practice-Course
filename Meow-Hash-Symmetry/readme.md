@@ -1,7 +1,5 @@
 # [Meow Hash: Symmetry](https://github.com/MaxIkaros/Cyberspace-Security-Innovation-and-Entrepreneurship-Practice-Course/tree/main/Meow-Hash-Symmetry)
 
-[TOC]
-
 ## 对应题目
 
 ![image-20220725151623889](README/assets/image-20220725151623889.png)
@@ -15,6 +13,8 @@ Find a 64-byte message under some *k* fulfilling that their hash value is symmet
 ![image-20220729154238475](readme/assets/image-20220729154238475.png)
 
 上图为64 Bytes的信息的Hash过程。
+
+- 实际上，该代码对长度为32、64、96、128、160、192、224 Bytes的`message`均可运行。
 
 ## 运行指导
 
@@ -45,7 +45,7 @@ Find a 64-byte message under some *k* fulfilling that their hash value is symmet
 
 ## 参考资料
 
-1. [Meow hash 0.5/calico](https://github.com/cmuratori/meow_hash)
-2. [Cryptanalysis of Meow Hash](https://peter.website/meow-hash-cryptanalysis)
-3. [Intel AES-NI使用入门](https://www.anquanke.com/post/id/260323)
-4. 2022年6月10日上课时的课件和录屏
+1. [Meow hash 0.5/calico](https://github.com/cmuratori/meow_hash)；
+2. [Cryptanalysis of Meow Hash](https://peter.website/meow-hash-cryptanalysis)；
+3. [Intel AES-NI使用入门](https://www.anquanke.com/post/id/260323)；
+4. 2022年6月10日上课时的课件和录屏。
