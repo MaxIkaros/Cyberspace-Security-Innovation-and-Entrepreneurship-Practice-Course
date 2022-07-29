@@ -14,9 +14,10 @@ using namespace std;
 //const char* MESSAGE = "abcdefghabcdefghaijklmnhaijklmnh"; // 32
 //const char* MESSAGE = "abcdefghabcdefghabcdefghabcdefgh";
 
-// Every 32Byte can satisfy the format of "abcdefghabcdefghaijklmnhaijklmnh"
+// Every 32-Byte can satisfy the format of "abcdefghabcdefghaijklmnhaijklmnh"
 //const char* MESSAGE = "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh"; // 64
-const char* MESSAGE = "abcdefghabcdefghaijklmnhaijklmnhabcdefghabcdefghaijklmnhaijklmnh"; // 64
+//const char* MESSAGE = "abcdefghabcdefghaijklmnhaijklmnhabcdefghabcdefghaijklmnhaijklmnh"; // 64
+const char* MESSAGE = "abcdefghabcdefghaijklmnhaijklmnhopqrstuvopqrstuvowxyz01vowxyz01v"; // 64-Byte standard style
 
 const int MSG_LEN = strlen(MESSAGE);
 
