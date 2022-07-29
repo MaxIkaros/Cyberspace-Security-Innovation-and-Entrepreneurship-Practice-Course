@@ -8,6 +8,8 @@ Find a 64-byte message under some *k* fulfilling that their hash value is symmet
 
 ## 项目代码说明
 
+### 总体思路
+
 如上图所示，在已经合并非对称长度字段之后但在合并任何消息字节之前使状态对称（即为全0），然后逆向运行Meow Hash的Absorption function，从而构造出一个全新的密钥，该密钥将在长度被吸收后达到对称状态。同时，`message`要保证是abc-symmetrical的。
 
 ![image-20220729154238475](README/assets/image-20220729154238475.png)
@@ -15,6 +17,55 @@ Find a 64-byte message under some *k* fulfilling that their hash value is symmet
 上图为64 Bytes的信息的Hash过程。
 
 - 实际上，该代码对长度为32、64、96、128、160、192、224 Bytes的`message`均可运行。
+
+### 细节注意
+
+对于
+
+```c
+#define aesdec(A, B)        A = _mm_aesdec_si128(A, B)
+```
+
+的逆向，不是直接`aesenc`
+
+```c
+#define aesenc(A, B)	    A = _mm_aesenc_si128(A, B)
+```
+
+就可以了的，而是需要`inv_aesdec`
+
+```c
+static meow_u128 xmm_allzero = _mm_setzero_si128(); // All zero
+#define pxor(A, B)          A = _mm_xor_si128(A, B)
+#define inv_mixcol(A)		A = _mm_aesimc_si128(A) // AES-128-ECB invert mix columns
+#define MixColumns(A)		A = _mm_aesdeclast_si128(A, xmm_allzero); A = _mm_aesenc_si128(A, xmm_allzero) // AES-128-ECB mix columns
+
+#define inv_aesdec(A, B) \
+pxor(A, B);\ /*异或*/
+MixColumns(A);\ /*列混合*/
+aesenc(A, xmm_allzero);\ /*行移位、S盒置换、列混合（最后的“异或”操作是与全0串进行的，不改变最终结果）*/
+inv_mixcol(A) /*逆列混合*/
+```
+
+才能保证逆向。因为对于`_mm_aesdec_si128`来说，它是这样运行的：
+
+```c
+a[127:0] := InvShiftRows(a[127:0])
+a[127:0] := InvSubBytes(a[127:0])
+a[127:0] := InvMixColumns(a[127:0])
+dst[127:0] := a[127:0] XOR RoundKey[127:0]
+```
+
+而`_mm_aesenc_si128`是这样运行的：
+
+```c
+a[127:0] := ShiftRows(a[127:0])
+a[127:0] := SubBytes(a[127:0])
+a[127:0] := MixColumns(a[127:0])
+dst[127:0] := a[127:0] XOR RoundKey[127:0]
+```
+
+显然`_mm_aesdec_si128`不是直接地逆向运行`_mm_aesenc_si128`的，而是采用“等价解密算法”的方式来实现解密的，在此不作过多讲述。因而我们需要另行实现对`_mm_aesdec_si128`的逆向运行，如`inv_aesdec`所示。
 
 ## 运行指导
 
