@@ -10,7 +10,7 @@ Find a key with hash value “*sdu_cst_20220610*” under a message composed of 
 
 参照[meow_hash_x64_aesni.h](meow_hash_x64_aesni.h)中的`MeowHash`函数，对Hash过程进行逆序（犹以其中的AES为最）而诞生了main.cpp中的`InvToGetKey`函数。
 
-![image-20220729152126265](readme/assets/image-20220729152126265.png)
+![image-20220729152126265](README/assets/image-20220729152126265.png)
 
 上图中从左到右为不足32 Bytes的`message`的Hash过程（姓名+学号的内容一般不足32 Bytes），因而`InvToGetKey`函数是从右到左实现上图的过程的。
 
@@ -24,7 +24,7 @@ Find a key with hash value “*sdu_cst_20220610*” under a message composed of 
 
 ## 代码运行全过程截图
 
-![image-20220729151641311](readme/assets/image-20220729151641311.png)
+![image-20220729151641311](README/assets/image-20220729151641311.png)
 
 其中：
 
