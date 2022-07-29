@@ -4,23 +4,37 @@
 
 ## SM3：
 
-✅Project: implement the naïve birthday attack of reduced SM3
+✅**Project: implement the naïve birthday attack of reduced SM3**
 
-✅Project: implement the Rho method of reduced SM3
+（陈思宇独立完成）
+（贾晨铮独立完成）
 
-✅Project: implement length extension attack for SM3, SHA256, etc.
+✅**Project: implement the Rho method of reduced SM3**
 
-✅Project: do your best to optimize SM3 implementation (software)
+（陈思宇独立完成）
+（贾晨铮独立完成）
+
+✅**Project: implement length extension attack for SM3, SHA256, etc.**
+
+（贾晨铮独立完成）
+
+✅**Project: do your best to optimize SM3 implementation (software)**
+
+（贾晨铮独立完成）
 
 Project: Impl Merkle Tree following RFC6962
 
-✅Project: Try to Implement this scheme
+✅**Project: Try to Implement this scheme**
+
+（陈思宇独立完成）
 
 <!--文件见siyu-chen branch，参考链接如下：blog.csdn.net/qq_35699583/article/details/113060927?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1-113060927-blog-121555000.pc_relevant_multi_platform_whitelistv1_exp2&utm_relevant_index=1-->
 
 ## SM2：
 
-✅Project: report on the application of this deduce technique in Ethereum with ECDSA
+✅**Project: report on the application of this deduce technique in Ethereum with ECDSA**
+
+（陈思宇独立完成）
 
 Project: impl sm2 with RFC6979
 
@@ -52,9 +66,13 @@ Project: research report on MPT
 
 ## Real-world-cryptanalysis：
 
-✅Project: Find a key with hash value “\*sdu_cst_20220610\*” under a message composed of \*your name\* followed by \*your student ID\*. For example, “\*San Zhan 202000460001\*”.
+✅**Project: Find a key with hash value “\*sdu_cst_20220610\*” under a message composed of \*your name\* followed by \*your student ID\*. For example, “\*San Zhan 202000460001\*”.**
 
-Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical
+（葛萧遥独立完成）
+
+✅**Project: Find a 64-byte message under some k fulfilling that their hash value is symmetrical**
+
+（葛萧遥独立完成）
 
 ## Real-world-ZK：
 
