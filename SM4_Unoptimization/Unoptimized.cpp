@@ -142,16 +142,36 @@ int128 SM4(int128 m) { // 主加密函数，输入与输出均为128位数据
 int main() {
 	int128 m = 1; // 假设明文为1
 
-	int128 c = SM4(m);
+	int128 c;
+	//c = SM4(m);
 
-	unsigned int ans[4];
-	for (int i = 0; i < 4; i++) {
-		ans[3 - i] = (unsigned int)(c & 0xffffffff);
-		c >>= 32;
-	}
+	//unsigned int ans[4];
+	//for (int i = 0; i < 4; i++) {
+	//	ans[3 - i] = (unsigned int)(c & 0xffffffff);
+	//	c >>= 32;
+	//}
 
-	for (int i = 0; i < 4; i++) {
-		printf("%x", ans[i]);
+	//for (int i = 0; i < 4; i++) {
+	//	printf("%x", ans[i]);
+	//}
+
+	time_t begin, end;
+	int size = 10000;
+	begin = clock();
+	for (int i = 0; i < size; i++)
+		c = SM4(i);
+	end = clock();
+	float tim = end - begin;
+	tim /= size;
+	printf("单次加密耗时%fms\n", tim);//由于单次加密时间过短，所以执行10000次测试单次加密时间
+	begin = clock();
+	int N = 100000;
+	for (int i = 0; i < N; i++) {
+		c = SM4(i);
 	}
+	end = clock();
+	tim = end - begin;
+	printf("每秒加密次数约为%d次\n", int((N / tim) * 1000));
+	
 	return 0;
 }
