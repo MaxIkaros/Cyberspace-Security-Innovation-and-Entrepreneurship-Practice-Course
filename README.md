@@ -11,7 +11,7 @@
 | 葛萧遥 | 202000460091 |    [**MaxIkaros** Max Kot](https://github.com/MaxIkaros)     |
 | 贾晨铮 | 202000460062 |    [**cipeizheng** Ci_pei](https://github.com/cipeizheng)    |
 | 陈思宇 | 202000460119 |     [**2001AlexChen**](https://github.com/2001AlexChen)      |
-| 郝子睿 |    202000    | [**guoanbumingzhentan**](https://github.com/guoanbumingzhentan) |
+| 郝子睿 | 202022150212 | [**guoanbumingzhentan**](https://github.com/guoanbumingzhentan) |
 
 ## 项目及完成情况：
 
