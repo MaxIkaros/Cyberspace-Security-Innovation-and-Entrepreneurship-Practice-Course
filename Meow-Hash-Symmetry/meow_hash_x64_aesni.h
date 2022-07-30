@@ -123,7 +123,7 @@
 
 #if _MSC_VER
 #if !defined(__clang__)
-#define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier()
+#define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier() // Enables all read and write operations before this point to be executed before operations after this point can be started.
 #else
 #endif
 #include <intrin.h>
@@ -145,6 +145,7 @@
 #error Cannot determine architecture to use!
 #endif
 
+#define MeowU8From(A, I) (_mm_extract_epi8((A), (I)))
 #define MeowU32From(A, I) (_mm_extract_epi32((A), (I)))
 #define MeowHashesAreEqual(A, B) (_mm_movemask_epi8(_mm_cmpeq_epi8((A), (B))) == 0xFFFF)
 
@@ -170,15 +171,50 @@
 #define movdqu(A, B)        A = _mm_loadu_si128((__m128i *)(B))
 #define movdqu_mem(A, B)        _mm_storeu_si128((__m128i *)(A), B)
 #define movq(A, B)          A = _mm_set_epi64x(0, B);
-#define aesdec(A, B)        A = _mm_aesdec_si128(A, B) // AES-128-ECB decrypt
-#define aesenc(A, B)	    A = _mm_aesenc_si128(A, B) // 
+#define pxor_clear(A, B)    A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
+static meow_u128 xmm_allzero = _mm_setzero_si128(); // All zero
+
+static meow_u8 data_SubBytes[16] = {
+	//0x0306090c0f020508 0b0e0104070a0d00	
+
+	0x00, 0x0d, 0x0a, 0x07, 0x04, 0x01, 0x0e, 0x0b, 
+	0x08, 0x05, 0x02, 0x0f, 0x0c, 0x09, 0x06, 0x03
+};
+meow_u128 xmm_SubBytes = _mm_loadu_si128((__m128i*)data_SubBytes);
+
+static meow_u8 data_ShiftRows[16] = {
+	//0x0b06010c07020d08 030e09040f0a0500
+
+	0x00, 0x05, 0x0a, 0x0f, 0x04, 0x09, 0x0e, 0x03, 
+	0x08, 0x0d, 0x02, 0x07, 0x0c, 0x01, 0x06, 0x0b
+};
+meow_u128 xmm_ShiftRows = _mm_loadu_si128((__m128i*)data_ShiftRows);
+
+#define aesdec(A, B)        A = _mm_aesdec_si128(A, B) // (InvShiftRows, InvSubBytes, InvMixColumns, XOR RoundKey)
+#define aesenc(A, B)	    A = _mm_aesenc_si128(A, B) // (ShiftRows, SubBytes, MixColumns, XOR RoundKey)
 #define pshufb(A, B)        A = _mm_shuffle_epi8(A, B)
 #define pxor(A, B)          A = _mm_xor_si128(A, B)
 #define paddq(A, B)         A = _mm_add_epi64(A, B)
 #define psubq(A, B)         A = _mm_sub_epi64(A, B)
 #define pand(A, B)          A = _mm_and_si128(A, B)
 #define palignr(A, B, i)    A = _mm_alignr_epi8(A, B, i)
-#define pxor_clear(A, B)    A = _mm_setzero_si128(); // NOTE(casey): pxor_clear is a nonsense thing that is only here because compilers don't detect xor(a, a) is clearing a :(
+
+//https://www.anquanke.com/post/id/260323
+#define inv_mixcol(A)		A = _mm_aesimc_si128(A) // AES-128-ECB invert mix columns
+#define MixColumns(A)		A = _mm_aesdeclast_si128(A, xmm_allzero); A = _mm_aesenc_si128(A, xmm_allzero) // AES-128-ECB mix columns
+#define SubBytes(A)			A = _mm_shuffle_epi8(A, xmm_SubBytes); A = _mm_aesenc_si128(A, xmm_allzero) // AES-128-ECB sub bytes
+#define ShiftRows(A)		A = _mm_shuffle_epi8(A, xmm_ShiftRows) // AES-128-ECB shift rows
+
+#define inv_aesdec(A, B) \
+pxor(A, B);\
+MixColumns(A);\
+aesenc(A, xmm_allzero);\
+inv_mixcol(A)
+//#define inv_aesdec(A, B) \
+//pxor(A, B);\
+//MixColumns(A);\
+//SubBytes(A);\
+//ShiftRows(A)
 
 #define MEOW_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 aesdec(r1, r2);              \
@@ -188,39 +224,22 @@ pxor(r2, i2);                \
 aesdec(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
 paddq(r5, i3);               \
-pxor(r4, i4);
+pxor(r4, i4);\
 
-//#define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
-//pxor(r4, i4);                \
-//psubq(r5, i3);               \
-//aesenc(r2, r4);              \
-//INSTRUCTION_REORDER_BARRIER; \
-//pxor(r2, i2);                \
-//psubq(r3, i1);               \
-//aesenc(r1, r2);              \
-//INSTRUCTION_REORDER_BARRIER;
-//// Xor one more time, so xor back
+//#include <wmmintrin.h>
+// 2 Xor's
 #define MEOW_INV_MIX_REG(r1, r2, r3, r4, r5,  i1, i2, i3, i4) \
 pxor(r4, i4);                \
 psubq(r5, i3);               \
-pxor(r2, r4);                \
-aesenc(r2, r4);              \
 INSTRUCTION_REORDER_BARRIER; \
-pxor(r2, r4);                \
+inv_aesdec(r2, r4);          \
 pxor(r2, i2);                \
 psubq(r3, i1);               \
-pxor(r1, r2);                \
-aesenc(r1, r2);              \
 INSTRUCTION_REORDER_BARRIER; \
-pxor(r1, r2);
-// Xor one more time, so xor back
+inv_aesdec(r1, r2);          \
 
-// forward
 #define MEOW_MIX(r1, r2, r3, r4, r5,  ptr) \
 MEOW_MIX_REG(r1, r2, r3, r4, r5, _mm_loadu_si128( (__m128i *) ((ptr) + 15) ), _mm_loadu_si128( (__m128i *) ((ptr) + 0)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 1)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 16) ))
-// reverse
-#define MEOW_INV_MIX(r1, r2, r3, r4, r5,  ptr) \
-MEOW_INV_MIX_REG(r1, r2, r3, r4, r5, _mm_loadu_si128( (__m128i *) ((ptr) + 15) ), _mm_loadu_si128( (__m128i *) ((ptr) + 0)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 1)  ), _mm_loadu_si128( (__m128i *) ((ptr) + 16) ))
 
 #define MEOW_SHUFFLE(r1, r2, r3, r4, r5, r6) \
 aesdec(r1, r4); \
@@ -228,70 +247,7 @@ paddq(r2, r5);  \
 pxor(r4, r6);   \
 aesdec(r4, r2); \
 paddq(r5, r6);  \
-pxor(r2, r3)
-//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-//pxor(r1, r2);     \
-//aesenc(r4, r1);   \
-//psubq(r5, r6);    \
-//pxor(r4, r6);     \
-//psubq(r1, r5);    \
-//aesenc(r0, r4);
-//// Xor one more time, so in the last line xor back
-#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-aesenc(r4, r1); \
-pxor(r4, r1);   \
-psubq(r5, r6);  \
-pxor(r4, r6);   \
-psubq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
-// Xor one more time, so in the last line xor back
-//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-//pxor(r1, r2);   \
-//pxor(r4, r1);   \
-//psubq(r5, r6);  \
-//aesenc(r4, r6); \
-//psubq(r1, r5);  \
-//pxor(r0, r4);   \
-//aesenc(r0, r1); \
-//pxor(r0, r1);
-//// Xor one more time, so in the last line xor back
-
-
-//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-//pxor(r1, r2);     \
-//aesenc(r4, r1);   \
-//psubq(r5, r6);    \
-//pxor(r4, r6);     \
-//psubq(r1, r5);    \
-//aesenc(r0, r4);
-//// Xor one more time, so in the last line xor back
-#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-pxor(r1, r2);   \
-pxor(r4, r1);   \
-aesenc(r4, r1); \
-pxor(r4, r1);   \
-psubq(r5, r6);  \
-pxor(r4, r6);   \
-psubq(r1, r5);  \
-pxor(r0, r4);   \
-aesenc(r0, r1); \
-pxor(r0, r1);
-// Xor one more time, so in the last line xor back
-//#define MEOW_INV_SHUFFLE(r0, r1, r2, r4, r5, r6) \
-//pxor(r1, r2);   \
-//pxor(r4, r1);   \
-//psubq(r5, r6);  \
-//aesenc(r4, r6); \
-//psubq(r1, r5);  \
-//pxor(r0, r4);   \
-//aesenc(r0, r1); \
-//pxor(r0, r1);
-//// Xor one more time, so in the last line xor back
-
+pxor(r2, r3);
 
 #if MEOW_DUMP
 struct meow_dump
@@ -347,106 +303,55 @@ static meow_u8 MeowDefaultSeed[128] =
 
 void PrintHash(meow_u128 Hash);
 void PrintKey(meow_u128 Hash1, meow_u128 Hash2);
+void PrintHex(meow_u128 Hash);
+void PrintByte(meow_u128 Hash);
+void PrintBytes(meow_u128 Hash1, meow_u128 Hash2);
 
 /// <summary>
 /// Invertibility
 /// </summary>
+/// <param name="Key_Gen">
+/// Save the generated key
+/// </param>
 /// <param name="Len">
-/// Length of message
+/// Buffer length
 /// </param>
-/// <param name="HashedMsg">
-/// Hash value
-/// </param>
-/// <param name="msg">
-/// Message
-/// </param>
-static void Invertibility(meow_umm Len, void* msg) {
+//static void Invertibility(meow_umm Len) {
+static void Invertibility(void* Key_Gen, meow_umm Len) {
 
 	// NOTE(casey): xmm0-xmm7 are the hash accumulation lanes
 	meow_u128 xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
 	// NOTE(casey): xmm8-xmm15 hold values to be appended (residual, length)
 	meow_u128 xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15;
+
+// Initialize
+	pxor_clear(xmm0);
+	pxor_clear(xmm1);
+	pxor_clear(xmm2);
+	pxor_clear(xmm3);
+	pxor_clear(xmm4);
+	pxor_clear(xmm5);
+	pxor_clear(xmm6);
+	pxor_clear(xmm7);
+
+	//printf("\nxmm_SubBytes: \n");
+	//PrintByte(xmm_SubBytes);
+	//printf("\nxmm_ShiftRows: \n");
+	//PrintByte(xmm_ShiftRows);	
 	
-	meow_u8* rax = (meow_u8*)msg;
+	//printf("\n");
+	//PrintHash(xmm0);
+	//PrintHash(xmm1);
+	//PrintHash(xmm2);
+	//PrintHash(xmm3);
+	//PrintHash(xmm4);
+	//PrintHash(xmm5);
+	//PrintHash(xmm6);
+	//PrintHash(xmm7);
 
-	// all-zero
-	static meow_u8 MeowMixResult[128] = {
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	};
-
-// Initialize the hash accumulation lanes.
-	movdqu(xmm0, MeowMixResult + 0x00);
-	movdqu(xmm1, MeowMixResult + 0x10);
-	movdqu(xmm2, MeowMixResult + 0x20);
-	movdqu(xmm3, MeowMixResult + 0x30);
-	movdqu(xmm4, MeowMixResult + 0x40);
-	movdqu(xmm5, MeowMixResult + 0x50);
-	movdqu(xmm6, MeowMixResult + 0x60);
-	movdqu(xmm7, MeowMixResult + 0x70);
-
-	printf("\n");
-	PrintHash(xmm0);
-	PrintHash(xmm1);
-	PrintHash(xmm2);
-	PrintHash(xmm3);
-	PrintHash(xmm4);
-	PrintHash(xmm5);
-	PrintHash(xmm6);
-	PrintHash(xmm7);
-
-	/*-------------------------------------------------------------------------------------------------------*/
-	// Honestly, I didn't understand the code for the end of the hash and the length information 
-	// in the original article, so I can only put up the original author's related process from
-	// meow_hash_x64_aesni.h.
-// BEGIN
-	/*-------------------------------------------------------------------------------------------------------*/
-
-	// NOTE(casey): Load any less-than-32-byte residual
+// NOTE(casey): Load any less-than-32-byte residual
 	pxor_clear(xmm9, xmm9);
 	pxor_clear(xmm11, xmm11);
-
-	// TODO(casey): I need to put more thought into how the end-of-buffer stuff is actually working out here,
-	// because I _think_ it may be possible to remove the first branch (on Len8) and let the mask zero out the
-	// result, but it would take a little thought to make sure it couldn't read off the end of the buffer due
-	// to the & 0xf on the align computation.
-
-	// NOTE(casey): First, we have to load the part that is _not_ 16-byte aligned
-	meow_u8* Last = (meow_u8*)msg + (Len & ~0xf);
-	int unsigned Len8 = (Len & 0xf);
-	if (Len8) { // unnecessary
-		// NOTE(casey): Load the mask early
-		movdqu(xmm8, &MeowMaskLen[0x10 - Len8]);
-
-		meow_u8* LastOk = (meow_u8*)((((meow_umm)(((meow_u8*)msg) + Len - 1)) | (MEOW_PAGESIZE - 1)) - 16);
-		int Align = (Last > LastOk) ? ((int)(meow_umm)Last) & 0xf : 0;
-		movdqu(xmm10, &MeowShiftAdjust[Align]);
-		movdqu(xmm9, Last - Align);
-		pshufb(xmm9, xmm10);
-
-		// NOTE(jeffr): and off the extra bytes
-		pand(xmm9, xmm8);
-	}
-
-	// NOTE(casey): Next, we have to load the part that _is_ 16-byte aligned
-	if (Len & 0x10) { // unnecessary
-		xmm11 = xmm9;
-		movdqu(xmm9, Last - 0x10);
-	}
 
 	// NOTE(casey): Construct the residual and length injests
 	xmm8 = xmm9;
@@ -455,8 +360,8 @@ static void Invertibility(meow_umm Len, void* msg) {
 	palignr(xmm10, xmm11, 1);
 
 	// NOTE(casey): We have room for a 128-bit nonce and a 64-bit none here, but
-	// the decision was made to leave them zero'd so as not to confuse people
-	// about hwo to use them or what security implications they had.
+		// the decision was made to leave them zero'd so as not to confuse people
+		// about hwo to use them or what security implications they had.
 	pxor_clear(xmm12, xmm12);
 	pxor_clear(xmm13, xmm13);
 	pxor_clear(xmm14, xmm14);
@@ -464,85 +369,84 @@ static void Invertibility(meow_umm Len, void* msg) {
 	palignr(xmm12, xmm15, 15);
 	palignr(xmm14, xmm15, 1);
 
-	/*-------------------------------------------------------------------------------------------------------*/
-// END
-	/*-------------------------------------------------------------------------------------------------------*/
-
-	printf("\n");
-	PrintHash(xmm0);
-	PrintHash(xmm1);
-	PrintHash(xmm2);
-	PrintHash(xmm3);
-	PrintHash(xmm4);
-	PrintHash(xmm5);
-	PrintHash(xmm6);
-	PrintHash(xmm7);
-	PrintHash(xmm8);
-	PrintHash(xmm9);
-	PrintHash(xmm10);
-	PrintHash(xmm11);
-	PrintHash(xmm12);
-	PrintHash(xmm13);
-	PrintHash(xmm14);
-	PrintHash(xmm15);
+	//printf("%s\n", "Before: ");
+	//PrintByte(xmm0);
+	//PrintByte(xmm1);
+	//PrintByte(xmm2);
+	//PrintByte(xmm3);
+	//PrintByte(xmm4);
+	//PrintByte(xmm5);
+	//PrintByte(xmm6);
+	//PrintByte(xmm7);
+	//PrintByte(xmm8);
+	//PrintByte(xmm9);
+	//PrintByte(xmm10);
+	//PrintByte(xmm11);
+	//PrintByte(xmm12);
+	//PrintByte(xmm13);
+	//PrintByte(xmm14);
+	//PrintByte(xmm15);
 
 // Inverse Absorb message
 	// Append the length, to avoid problems with our 32-byte padding
 	MEOW_INV_MIX_REG(xmm1, xmm5, xmm7, xmm2, xmm3, xmm12, xmm13, xmm14, xmm15);
+
+	//printf("%s\n", "After Second: ");
+	//PrintByte(xmm0);
+	//PrintByte(xmm1);
+	//PrintByte(xmm2);
+	//PrintByte(xmm3);
+	//PrintByte(xmm4);
+	//PrintByte(xmm5);
+	//PrintByte(xmm6);
+	//PrintByte(xmm7);
+
 	// To maintain the mix-down pattern, we always Meow Mix the less-than-32-byte residual, even if it was empty
 	MEOW_INV_MIX_REG(xmm0, xmm4, xmm6, xmm1, xmm2, xmm8, xmm9, xmm10, xmm11);
 
-// DE-Hash all full 256-byte blocks (unnecessary)
-	meow_umm BlockCount = (Len >> 8);
-	meow_umm i = 0;
-	rax += BlockCount * 0x100;
-	if (BlockCount > MEOW_PREFETCH_LIMIT) {
-		// NOTE(casey): For large input, modern Intel x64's can't hit full speed without prefetching, so we use this loop
-		while (BlockCount > i) {
-			// Store data in cache in advance.
-			prefetcht0(rax - MEOW_PREFETCH + 0x00);
-			prefetcht0(rax - MEOW_PREFETCH + 0x40);
-			prefetcht0(rax - MEOW_PREFETCH + 0x80);
-			prefetcht0(rax - MEOW_PREFETCH + 0xc0);
-
-			MEOW_INV_MIX(xmm7, xmm3, xmm5, xmm0, xmm1, rax + 0xe0);
-			MEOW_INV_MIX(xmm6, xmm2, xmm4, xmm7, xmm0, rax + 0xc0);
-			MEOW_INV_MIX(xmm5, xmm1, xmm3, xmm6, xmm7, rax + 0xa0);
-			MEOW_INV_MIX(xmm4, xmm0, xmm2, xmm5, xmm6, rax + 0x80);
-			MEOW_INV_MIX(xmm3, xmm7, xmm1, xmm4, xmm5, rax + 0x60);
-			MEOW_INV_MIX(xmm2, xmm6, xmm0, xmm3, xmm4, rax + 0x40);
-			MEOW_INV_MIX(xmm1, xmm5, xmm7, xmm2, xmm3, rax + 0x20);
-			MEOW_INV_MIX(xmm0, xmm4, xmm6, xmm1, xmm2, rax + 0x00);
-
-			rax -= 0x100;
-			i++;
-		}
-	}
-	else {
-		// NOTE(casey): For small input, modern Intel x64's can't hit full speed _with_ prefetching (because of port pressure), so we use this loop.
-		while (BlockCount > i) {
-			MEOW_INV_MIX(xmm7, xmm3, xmm5, xmm0, xmm1, rax + 0xe0);
-			MEOW_INV_MIX(xmm6, xmm2, xmm4, xmm7, xmm0, rax + 0xc0);
-			MEOW_INV_MIX(xmm5, xmm1, xmm3, xmm6, xmm7, rax + 0xa0);
-			MEOW_INV_MIX(xmm4, xmm0, xmm2, xmm5, xmm6, rax + 0x80);
-			MEOW_INV_MIX(xmm3, xmm7, xmm1, xmm4, xmm5, rax + 0x60);
-			MEOW_INV_MIX(xmm2, xmm6, xmm0, xmm3, xmm4, rax + 0x40);
-			MEOW_INV_MIX(xmm1, xmm5, xmm7, xmm2, xmm3, rax + 0x20);
-			MEOW_INV_MIX(xmm0, xmm4, xmm6, xmm1, xmm2, rax + 0x00);
-
-			rax -= 0x100;
-			i++;
-		}
-	}
-
 // Print the answer
-	printf("%s\n", "==========================================================================================");
-	printf("%s\n", "KEY: ");
-	PrintKey(xmm0, xmm1);
-	PrintKey(xmm2, xmm3);
-	PrintKey(xmm4, xmm5);
-	PrintKey(xmm6, xmm7);
-	printf("\n%s", "==========================================================================================");
+	//printf("%s\n", "===================================================");
+	//printf("%s\n", "KEY: ");
+	////PrintByte(xmm0);
+	////PrintByte(xmm1);
+	////PrintByte(xmm2);
+	////PrintByte(xmm3);
+	////PrintByte(xmm4);
+	////PrintByte(xmm5);
+	////PrintByte(xmm6);
+	////PrintByte(xmm7);
+
+	//PrintBytes(xmm0, xmm1);
+	//PrintBytes(xmm2, xmm3);
+	//PrintBytes(xmm4, xmm5);
+	//PrintBytes(xmm6, xmm7);
+	//printf("\n");
+	//PrintHex(xmm0);
+	//PrintHex(xmm1);
+	//PrintHex(xmm2);
+	//PrintHex(xmm3);
+	//PrintHex(xmm4);
+	//PrintHex(xmm5);
+	//PrintHex(xmm6);
+	//PrintHex(xmm7);
+
+	////PrintKey(xmm0, xmm1);
+	////PrintKey(xmm2, xmm3);
+	////PrintKey(xmm4, xmm5);
+	////PrintKey(xmm6, xmm7);
+	//printf("%s", "===================================================");
+
+// For return
+	meow_u8* rax = (meow_u8*)Key_Gen;
+	movdqu_mem(rax + 0x00, xmm0);
+	movdqu_mem(rax + 0x10, xmm1);
+	movdqu_mem(rax + 0x20, xmm2);
+	movdqu_mem(rax + 0x30, xmm3);
+	movdqu_mem(rax + 0x40, xmm4);
+	movdqu_mem(rax + 0x50, xmm5);
+	movdqu_mem(rax + 0x60, xmm6);
+	movdqu_mem(rax + 0x70, xmm7);
+	Key_Gen = rax;
 	
 	return;
 }
@@ -575,6 +479,16 @@ MeowHash(void* Seed128Init, meow_umm Len, void* SourceInit)
 	movdqu(xmm7, rcx + 0x70);
 
 	MEOW_DUMP_STATE("Seed", xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, 0);
+
+	//printf("\n");
+	//PrintHash(xmm0);
+	//PrintHash(xmm1);
+	//PrintHash(xmm2);
+	//PrintHash(xmm3);
+	//PrintHash(xmm4);
+	//PrintHash(xmm5);
+	//PrintHash(xmm6);
+	//PrintHash(xmm7);
 
 	//
 	// NOTE(casey): Hash all full 256-byte blocks
@@ -673,7 +587,7 @@ MeowHash(void* Seed128Init, meow_umm Len, void* SourceInit)
 
 	// NOTE(casey): We have room for a 128-bit nonce and a 64-bit none here, but
 	// the decision was made to leave them zero'd so as not to confuse people
-	// about hwo to use them or what security implications they had.
+	// about how to use them or what security implications they had.
 	pxor_clear(xmm12, xmm12);
 	pxor_clear(xmm13, xmm13);
 	pxor_clear(xmm14, xmm14);
@@ -683,31 +597,59 @@ MeowHash(void* Seed128Init, meow_umm Len, void* SourceInit)
 
 	MEOW_DUMP_STATE("Residuals", xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, 0);
 
+	//printf("\n%s\n", "Oringin: ");
+	//PrintByte(xmm0);
+	//PrintByte(xmm1);
+	//PrintByte(xmm2);
+	//PrintByte(xmm3);
+	//PrintByte(xmm4);
+	//PrintByte(xmm5);
+	//PrintByte(xmm6);
+	//PrintByte(xmm7);
+	//PrintByte(xmm8);
+	//PrintByte(xmm9);
+	//PrintByte(xmm10);
+	//PrintByte(xmm11);
+	//PrintByte(xmm12);
+	//PrintByte(xmm13);
+	//PrintByte(xmm14);
+	//PrintByte(xmm15);
+
 	// NOTE(casey): To maintain the mix-down pattern, we always Meow Mix the less-than-32-byte residual, even if it was empty
 	MEOW_MIX_REG(xmm0, xmm4, xmm6, xmm1, xmm2, xmm8, xmm9, xmm10, xmm11);
+
+	//printf("%s\n", "First: ");
+	//PrintByte(xmm0);
+	//PrintByte(xmm1);
+	//PrintByte(xmm2);
+	//PrintByte(xmm3);
+	//PrintByte(xmm4);
+	//PrintByte(xmm5);
+	//PrintByte(xmm6);
+	//PrintByte(xmm7);
 
 	// NOTE(casey): Append the length, to avoid problems with our 32-byte padding
 	MEOW_MIX_REG(xmm1, xmm5, xmm7, xmm2, xmm3, xmm12, xmm13, xmm14, xmm15);
 
 	MEOW_DUMP_STATE("PostAppend", xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, 0);
 
-	printf("\n");
-	PrintHash(xmm0);
-	PrintHash(xmm1);
-	PrintHash(xmm2);
-	PrintHash(xmm3);
-	PrintHash(xmm4);
-	PrintHash(xmm5);
-	PrintHash(xmm6);
-	PrintHash(xmm7);
-	PrintHash(xmm8);
-	PrintHash(xmm9);
-	PrintHash(xmm10);
-	PrintHash(xmm11);
-	PrintHash(xmm12);
-	PrintHash(xmm13);
-	PrintHash(xmm14);
-	PrintHash(xmm15);
+	//printf("%s\n", "Second: ");
+	//PrintByte(xmm0);
+	//PrintByte(xmm1);
+	//PrintByte(xmm2);
+	//PrintByte(xmm3);
+	//PrintByte(xmm4);
+	//PrintByte(xmm5);
+	//PrintByte(xmm6);
+	//PrintByte(xmm7);
+	//PrintByte(xmm8);
+	//PrintByte(xmm9);
+	//PrintByte(xmm10);
+	//PrintByte(xmm11);
+	//PrintByte(xmm12);
+	//PrintByte(xmm13);
+	//PrintByte(xmm14);
+	//PrintByte(xmm15);
 
 	//
 	// NOTE(casey): Hash all full 32-byte blocks
