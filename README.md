@@ -6,12 +6,12 @@
 
 ## 小组成员：
 
-| 小组成员姓名 |                        Github账户名称                        |
-| :----------: | :----------------------------------------------------------: |
-|    葛萧遥    |    [**MaxIkaros** Max Kot](https://github.com/MaxIkaros)     |
-|    贾晨铮    |    [**cipeizheng** Ci_pei](https://github.com/cipeizheng)    |
-|    陈思宇    |     [**2001AlexChen**](https://github.com/2001AlexChen)      |
-|    郝子睿    | [**guoanbumingzhentan**](https://github.com/guoanbumingzhentan) |
+|  姓名  |     学号     |                        Github账户名称                        |
+| :----: | :----------: | :----------------------------------------------------------: |
+| 葛萧遥 | 202000460091 |    [**MaxIkaros** Max Kot](https://github.com/MaxIkaros)     |
+| 贾晨铮 |     2020     |    [**cipeizheng** Ci_pei](https://github.com/cipeizheng)    |
+| 陈思宇 |     2020     |     [**2001AlexChen**](https://github.com/2001AlexChen)      |
+| 郝子睿 |     2020     | [**guoanbumingzhentan**](https://github.com/guoanbumingzhentan) |
 
 ## 项目及完成情况：
 
@@ -34,8 +34,8 @@
 |    11    | Implement a PGP scheme with SM2                              |                                                              |        |        |        |        |
 |    12    | Implement sm2 2P sign with real network communication        |                                                              |        |        |        |        |
 |    13    | Implement sm2 2P decrypt with real network communication     |                                                              |        |        |        |        |
-|          | ***Bitcoin***                                                |                                                              |        |        |        |        |
 |    14    | PoC impl of the scheme, or do implement analysis by Google   |                                                              |        |        |        |        |
+|          | ***Bitcoin***                                                |                                                              |        |        |        |        |
 |    15    | Send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself |                                                              |        |        |        |        |
 |    16    | Forge a signature to pretend that you are Satoshi            | 葛萧遥：[ECDSA_Satoshi](https://github.com/MaxIkaros/Cyberspace-Security-Innovation-and-Entrepreneurship-Practice-Course/tree/main/ECDSA_Satoshi) |   ✅    |        |        |        |
 |          | ***Ethereum***                                               |                                                              |        |        |        |        |
