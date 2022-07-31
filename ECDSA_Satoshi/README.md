@@ -85,9 +85,15 @@ Forge a signature to pretend that I am Satoshi Nakamoto.
 
 	![image-20220730204923680](README/assets/image-20220730204923680.png)
 
+### 实验环境
+
+Pycharm Community Edition 2021.2.3
+
 ## 运行指导
 
-直接运行[main.py](https://github.com/MaxIkaros/Cyberspace-Security-Innovation-and-Entrepreneurship-Practice-Course/blob/main/ECDSA_Satoshi/main.py)文件即可。
+直接运行[main.py](main.py)文件即可，也可在Pycharm平台上运行。
+
+- 由于求模逆的扩展欧几里得算法`IntModInverse`在不存在模逆时会返回`None`，从而导致之后的运算出现error（`int`型和`Nonetype`型参数不可相乘），因而当遇到此种情况时，请重新运行[main.py](main.py)文件即可。
 
 ## 代码运行全过程截图
 
